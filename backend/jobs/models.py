@@ -1,0 +1,45 @@
+from django.db import models
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
+class Job(models.Model):
+    JOB_TYPE_CHOICES = (
+        ('INTERNSHIP', 'Internship'),
+        ('ATTACHMENT', 'Attachment'),
+        ('JOB_OPENING', 'Job Opening'),
+    )
+    
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    requirements = models.TextField()
+    job_type = models.CharField(max_length=20, choices=JOB_TYPE_CHOICES)
+    location = models.CharField(max_length=150)
+    deadline = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
+    
+    def __str__(self):
+        return f'{self.title} ({self.get_job_type_display()})'
+
+
+class Application(models.Model):
+    STATUS_CHOICES = (
+        ('PENDING', 'Pending'),
+        ('SHORTLISTED', 'Shortlisted'),
+        ('REJECTED', 'Rejected'),
+        ('HIRED', 'Hired'),
+    )
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='applications')
+    job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name='applications')
+    cover_letter = models.TextField(blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
+    ats_score = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
+    applied_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        unique_together = ('user', 'job')
+    
+    def __str__(self):
+        return f'{self.user.username} - {self.job.title}'
