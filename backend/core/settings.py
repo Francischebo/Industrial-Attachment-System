@@ -152,6 +152,8 @@ SIMPLE_JWT = {
 
 CORS_ALLOW_ALL_ORIGINS = env.bool('CORS_ALLOW_ALL_ORIGINS', default=False)
 CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[])
+CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=['http://localhost', 'http://127.0.0.1', 'http://localhost:3000'])
+
 
 # Basic Security Settings for Production
 SECURE_BROWSER_XSS_FILTER = True
