@@ -2,7 +2,8 @@ services:
   - type: web
     name: youth-portal-backend
     env: docker
-    rootDir: backend
+    dockerContext: ./backend
+    dockerfilePath: ./backend/Dockerfile
     plan: free
     healthCheckPath: /admin/login/
     envVars:
