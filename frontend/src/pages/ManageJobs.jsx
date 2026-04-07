@@ -20,6 +20,18 @@ export default function ManageJobs() {
         }
     }, [userRole]);
 
+    const updateApplicationStatus = async (appId, newStatus) => {
+        try {
+            await api.patch(`careers/applications/${appId}/status/`, { status: newStatus });
+            setApplications(prev => prev.map(a => a.id === appId ? { ...a, status: newStatus } : a));
+            setSelectedApp(prev => prev ? { ...prev, status: newStatus } : null);
+            alert(`Application updated to: ${newStatus}`);
+        } catch (error) {
+            console.error(error);
+            alert("Failed to update status.");
+        }
+    };
+
     const handleDownload = async (docId, fileName) => {
         try {
             const res = await api.get(`accounts/documents/${docId}/download/`, {
@@ -121,9 +133,26 @@ export default function ManageJobs() {
                         </div>
                         
                         <div className="p-8 pt-6">
-                            <h4 className="text-xl font-extrabold text-gray-800 mb-6 flex items-center">
-                                <svg className="w-6 h-6 mr-2 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                                Authenticated Candidate Uploads
+                            <h4 className="text-xl font-extrabold text-gray-800 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                <span className="flex items-center">
+                                    <svg className="w-6 h-6 mr-2 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                    Authenticated Candidate Uploads
+                                </span>
+                                
+                                <div className="flex gap-2">
+                                    {selectedApp.status !== 'SHORTLISTED' && selectedApp.status !== 'HIRED' && (
+                                       <button onClick={() => updateApplicationStatus(selectedApp.id, 'SHORTLISTED')} className="bg-green-600 hover:bg-green-700 text-white text-sm px-4 py-2 rounded-lg font-bold shadow-sm transition-colors flex items-center shrink-0">
+                                           <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+                                           Shortlist Candidate
+                                       </button>
+                                    )}
+                                    {selectedApp.status === 'SHORTLISTED' && (
+                                        <span className="bg-green-100 text-green-800 text-xs px-3 py-1.5 rounded-lg border border-green-200 font-bold shrink-0 flex items-center">
+                                            <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"></path></svg>
+                                            Candidate Shortlisted
+                                        </span>
+                                    )}
+                                </div>
                             </h4>
                             
                             {selectedApp.attached_documents && selectedApp.attached_documents.length > 0 ? (

@@ -7,7 +7,8 @@ from .views import (
     TrainingListCreateView, TrainingDetailView,
     MembershipListCreateView, MembershipDetailView,
     DocumentListCreateView, DocumentDetailView, ProtectedMediaView,
-    UserManagementListView, UserManagementDetailView, CustomTokenObtainPairView
+    UserManagementListView, UserManagementDetailView, CustomTokenObtainPairView,
+    DashboardStatsView
 )
 
 urlpatterns = [
@@ -15,6 +16,7 @@ urlpatterns = [
     path('login/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     
+    path('dashboard-stats/', DashboardStatsView.as_view(), name='dashboard-stats'),
     path('profile/', ProfileDetailView.as_view(), name='profile-detail'),
     
     path('education/', EducationListCreateView.as_view(), name='education-list'),

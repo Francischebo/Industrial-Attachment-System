@@ -12,6 +12,7 @@ from .serializers import (
     ProfessionalMembershipSerializer, DocumentSerializer, UserManagementSerializer,
     CustomTokenObtainPairSerializer
 )
+from jobs.models import Application
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
@@ -145,3 +146,43 @@ class UserManagementDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserManagementSerializer
     permission_classes = (IsAdminRole,)
+
+class DashboardStatsView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request):
+        user = request.user
+        apps = Application.objects.filter(user=user).order_by('-applied_at')
+        applications_count = apps.count()
+        
+        latest_action = "None"
+        if apps.exists():
+            latest_action = apps.first().get_status_display()
+            
+        score = 0
+        try:
+            profile = getattr(user, 'profile', None)
+            if profile:
+                fields_filled = bool(profile.middle_name and profile.dob and profile.gender and profile.id_number and profile.phone_number and profile.postal_address)
+                if fields_filled:
+                    score += 20
+        except Exception:
+            pass
+            
+        if user.education.exists():
+            score += 30
+            
+        doc_count = user.documents.count()
+        if doc_count >= 4:
+            score += 50
+        elif doc_count > 0:
+            score += (doc_count * 12)
+            
+        if score > 100:
+            score = 100
+            
+        return Response({
+            "applications_count": applications_count,
+            "profile_completeness_percentage": score,
+            "latest_action": latest_action
+        })

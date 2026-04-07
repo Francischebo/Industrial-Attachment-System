@@ -102,6 +102,24 @@ class ApplicationDetailView(generics.RetrieveUpdateDestroyAPIView):
             return qs.all()
         return qs.filter(user=self.request.user)
 
+from rest_framework import status
+
+class ApplicationStatusUpdateView(APIView):
+    permission_classes = (IsAdminOrReadOnly,)
+    
+    def patch(self, request, pk):
+        try:
+            instance = Application.objects.get(pk=pk)
+        except Application.DoesNotExist:
+            return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
+            
+        new_status = request.data.get('status')
+        if new_status in dict(Application.STATUS_CHOICES).keys():
+            instance.status = new_status
+            instance.save(update_fields=['status'])
+            return Response({"detail": f"Application marked as {new_status}.", "status": instance.status})
+        return Response({"detail": "Invalid status."}, status=status.HTTP_400_BAD_REQUEST)
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.utils import timezone
