@@ -25,9 +25,10 @@ class ApplicationListCreateView(generics.ListCreateAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     
     def get_queryset(self):
+        qs = Application.objects.select_related('job', 'user', 'user__profile').prefetch_related('user__documents')
         if self.request.user.role == 'ADMIN':
-            return Application.objects.all()
-        return Application.objects.filter(user=self.request.user)
+            return qs.all()
+        return qs.filter(user=self.request.user)
     
     def perform_create(self, serializer):
         user = self.request.user
@@ -96,9 +97,10 @@ class ApplicationDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     
     def get_queryset(self):
+        qs = Application.objects.select_related('job', 'user', 'user__profile').prefetch_related('user__documents')
         if self.request.user.role == 'ADMIN':
-            return Application.objects.all()
-        return Application.objects.filter(user=self.request.user)
+            return qs.all()
+        return qs.filter(user=self.request.user)
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
