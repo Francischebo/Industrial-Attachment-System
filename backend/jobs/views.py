@@ -102,23 +102,73 @@ class ApplicationDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from django.utils import timezone
+from datetime import timedelta
+from django.db.models.functions import TruncDate, TruncMonth, TruncWeek, TruncYear
 
 class AnalyticsView(APIView):
     permission_classes = (IsAdminOrReadOnly,)
     
     def get(self, request):
-        total_jobs = Job.objects.count()
-        total_applications = Application.objects.count()
+        period = request.query_params.get('period', 'monthly').lower()
+        now = timezone.now()
         
-        status_distribution = list(Application.objects.values('status').annotate(count=Count('id')))
-        job_type_distribution = list(Job.objects.values('job_type').annotate(count=Count('id')))
+        if period == 'daily':
+            start_date = now - timedelta(days=7)
+            trunc_func = TruncDate('applied_at')
+            date_format = "%b %d"
+        elif period == 'weekly':
+            start_date = now - timedelta(weeks=4)
+            trunc_func = TruncWeek('applied_at')
+            date_format = "%b %d"
+        elif period == 'yearly':
+            start_date = now - timedelta(days=365 * 5)
+            trunc_func = TruncYear('applied_at')
+            date_format = "%Y"
+        else: # monthly
+            start_date = now - timedelta(days=365)
+            trunc_func = TruncMonth('applied_at')
+            date_format = "%b %Y"
+            
+        apps = Application.objects.filter(applied_at__gte=start_date)
+        jobs_qs = Job.objects.filter(created_at__gte=start_date)
         
-        avg_ats_score = Application.objects.aggregate(Avg('ats_score'))['ats_score__avg'] or 0
+        total_jobs = jobs_qs.count()
+        total_applications = apps.count()
         
+        status_distribution = list(apps.values('status').annotate(count=Count('id')))
+        # Show job category demands based on applications received for each job type in period
+        job_type_distribution = list(apps.values('job__job_type').annotate(count=Count('id')))
+        
+        # fix job_type key name to match old response
+        formatted_job_type_dict = []
+        for j in job_type_distribution:
+            formatted_job_type_dict.append({
+                'job_type': j['job__job_type'],
+                'count': j['count']
+            })
+            
+        avg_ats_score = apps.aggregate(Avg('ats_score'))['ats_score__avg'] or 0
+        
+        trend_qs = apps.annotate(period_date=trunc_func).values('period_date').annotate(
+            app_count=Count('id'),
+            avg_score=Avg('ats_score')
+        ).order_by('period_date')
+        
+        trend = []
+        for item in trend_qs:
+            trend.append({
+                'date': item['period_date'].strftime(date_format) if hasattr(item['period_date'], 'strftime') else str(item['period_date']),
+                'applications': item['app_count'],
+                'average_score': round(item['avg_score'], 2) if item['avg_score'] else 0
+            })
+            
         return Response({
             "total_jobs": total_jobs,
             "total_applications": total_applications,
             "status_distribution": status_distribution,
-            "job_type_distribution": job_type_distribution,
+            "job_type_distribution": formatted_job_type_dict,
             "average_ats_score": round(avg_ats_score, 2),
+            "trend": trend,
+            "period": period,
         })

@@ -26,48 +26,112 @@ export default function Login() {
     };
 
     return (
-        <div className="flex justify-center items-center h-screen bg-gradient-to-br from-gray-50 to-primary-100">
-            <div className="w-full max-w-md mx-4">
-                <form onSubmit={handleSubmit} className="glass p-10 rounded-2xl">
-                    <div className="text-center mb-10">
-                        <div className="mx-auto w-full flex items-center justify-center mb-6">
-                            <img src="/logo.png" alt="Ministry Logo" className="h-[75px] object-contain drop-shadow-sm" />
-                        </div>
-                        <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Welcome Back</h2>
-                        <p className="text-sm text-gray-600 mt-2 font-medium">State Department for Petroleum Career Portal</p>
+        <div className="flex min-h-screen bg-white">
+            {/* Left Informational Side - Hidden on smaller screens */}
+            <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary-900 via-primary-800 to-slate-900 text-white relative overflow-hidden flex-col justify-between p-12">
+                {/* Abstract Background Design */}
+                <div className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-20 pointer-events-none">
+                    <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-primary-400 blur-3xl"></div>
+                    <div className="absolute top-1/2 -left-20 w-72 h-72 rounded-full bg-blue-500 blur-3xl"></div>
+                </div>
+
+                <div className="relative z-10">
+                    <div className="bg-white/10 backdrop-blur-sm inline-flex p-3 rounded-2xl mb-8 border border-white/20">
+                        <img src="/logo.png" alt="Ministry Logo" className="h-[60px] object-contain drop-shadow-lg" />
                     </div>
-                    <div className="space-y-5">
-                        <div className="relative">
-                            <label className="text-sm font-semibold text-gray-700 mb-1 block">Username</label>
-                            <input
-                                type="text" placeholder="Enter your username"
-                                className="w-full px-4 py-3 bg-white/50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-primary-200 focus:border-primary-400 focus:outline-none transition-all placeholder-gray-400"
-                                value={credentials.username}
-                                onChange={e => setCredentials({...credentials, username: e.target.value})}
-                            />
+                    <h1 className="text-5xl font-black mb-6 leading-tight tracking-tight">
+                        Empowering Youth<br/>
+                        <span className="text-primary-400">Through Excellence</span>
+                    </h1>
+                    <p className="text-lg text-primary-100/90 leading-relaxed max-w-lg mb-8 font-medium">
+                        Welcome to the State Department for Petroleum's E-Recruitment Portal. This platform is purposefully built to ensure transparent, merit-based, and seamless processing of internship and industrial attachment opportunities.
+                    </p>
+                    
+                    <div className="space-y-6">
+                        <div className="flex items-start space-x-4">
+                            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 border border-white/20">
+                                <svg className="w-5 h-5 text-primary-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            </div>
+                            <div>
+                                <h3 className="font-bold text-white">Automated Verification</h3>
+                                <p className="text-sm text-primary-200/80">Intelligent criteria matching ensures fair vetting</p>
+                            </div>
                         </div>
-                        <div className="relative">
-                            <label className="text-sm font-semibold text-gray-700 mb-1 block">Password</label>
-                            <input
-                                type="password" placeholder="••••••••"
-                                className="w-full px-4 py-3 bg-white/50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-primary-200 focus:border-primary-400 focus:outline-none transition-all placeholder-gray-400"
-                                value={credentials.password}
-                                onChange={e => setCredentials({...credentials, password: e.target.value})}
-                            />
+                        <div className="flex items-start space-x-4">
+                            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 border border-white/20">
+                                <svg className="w-5 h-5 text-primary-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                            </div>
+                            <div>
+                                <h3 className="font-bold text-white">Secure Processing</h3>
+                                <p className="text-sm text-primary-200/80">Multi-stage document validations and security compliance</p>
+                            </div>
                         </div>
-                        <button type="submit" className="w-full bg-primary hover:bg-primary-600 text-white font-bold py-3.5 rounded-xl shadow-[0_4px_14px_0_rgba(227,188,117,0.39)] hover:shadow-[0_6px_20px_rgba(227,188,117,0.23)] hover:-translate-y-0.5 transition-all duration-200 mt-2">
-                            Sign In to Portal
-                        </button>
                     </div>
-                    <div className="mt-8 text-center border-t border-gray-200 pt-6">
-                        <p className="text-gray-600 text-sm">
-                            Don't have an account?{' '}
-                            <a href="/register" className="font-semibold text-primary-600 hover:text-primary-700 hover:underline transition-colors">
-                                Create one here
-                            </a>
-                        </p>
+                </div>
+                
+                <div className="relative z-10 pt-12 text-sm text-primary-300/60 font-medium">
+                    &copy; {new Date().getFullYear()} State Department for Petroleum. All rights reserved.
+                </div>
+            </div>
+
+            {/* Right Login Form Side */}
+            <div className="w-full lg:w-1/2 flex items-center justify-center bg-gray-50/50 p-6 md:p-12 relative">
+                <div className="w-full max-w-md">
+                    {/* Mobile Logo Only */}
+                    <div className="lg:hidden text-center mb-8">
+                        <img src="/logo.png" alt="Ministry Logo" className="h-[75px] object-contain drop-shadow-sm mx-auto mb-4" />
+                        <h2 className="text-2xl font-extrabold text-gray-900 tracking-tight">SDP Career Portal</h2>
                     </div>
-                </form>
+
+                    <form onSubmit={handleSubmit} className="bg-white p-8 md:p-10 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 transition-all">
+                        <div className="text-center mb-10">
+                            <h2 className="text-3xl font-black text-gray-900 tracking-tight">Sign In</h2>
+                            <p className="text-sm text-gray-500 mt-2 font-medium">Access your portal applicant dashboard</p>
+                        </div>
+                        <div className="space-y-6">
+                            <div className="relative group">
+                                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block group-focus-within:text-primary-600 transition-colors">Username</label>
+                                <div className="relative">
+                                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                        <svg className="h-5 w-5 text-gray-400 group-focus-within:text-primary-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                                    </div>
+                                    <input
+                                        type="text" placeholder="Enter your username"
+                                        className="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-primary-100 focus:border-primary-400 focus:outline-none transition-all placeholder-gray-400 font-medium text-gray-900"
+                                        value={credentials.username}
+                                        onChange={e => setCredentials({...credentials, username: e.target.value})}
+                                    />
+                                </div>
+                            </div>
+                            <div className="relative group">
+                                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block group-focus-within:text-primary-600 transition-colors">Password</label>
+                                <div className="relative">
+                                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                        <svg className="h-5 w-5 text-gray-400 group-focus-within:text-primary-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                                    </div>
+                                    <input
+                                        type="password" placeholder="••••••••"
+                                        className="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-primary-100 focus:border-primary-400 focus:outline-none transition-all placeholder-gray-400 font-medium text-gray-900"
+                                        value={credentials.password}
+                                        onChange={e => setCredentials({...credentials, password: e.target.value})}
+                                    />
+                                </div>
+                            </div>
+                            <button type="submit" className="w-full bg-primary hover:bg-primary-600 text-white font-bold py-4 rounded-xl shadow-[0_4px_14px_0_rgba(227,188,117,0.39)] hover:shadow-[0_6px_20px_rgba(227,188,117,0.23)] hover:-translate-y-0.5 transition-all duration-300 mt-4 flex justify-center items-center gap-2">
+                                Sign In to Portal
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                            </button>
+                        </div>
+                        <div className="mt-8 text-center border-t border-gray-100 pt-6">
+                            <p className="text-gray-600 text-sm font-medium">
+                                Don't have an account?{' '}
+                                <a href="/register" className="font-bold text-primary-600 hover:text-primary-800 hover:underline transition-colors decoration-2 underline-offset-4">
+                                    Create one here
+                                </a>
+                            </p>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     );

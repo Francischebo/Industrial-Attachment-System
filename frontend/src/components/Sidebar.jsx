@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import useAuthStore from '../store/authStore';
 
-export default function Sidebar() {
+export default function Sidebar({ isOpen, setIsOpen }) {
     const location = useLocation();
     const logout = useAuthStore(state => state.logout);
     const userRole = useAuthStore(state => state.user?.role || 'APPLICANT');
@@ -28,35 +28,49 @@ export default function Sidebar() {
     ];
 
     return (
-        <div className="w-64 bg-primary text-slate-800 min-h-screen flex flex-col border-r border-primary-600 shadow-xl transition-all duration-300">
-            <div className="p-4 border-b border-primary-600 flex justify-center items-center bg-white shadow-sm">
-                <img src="/logo.png" alt="Ministry Logo" className="h-12 object-contain filter drop-shadow-sm" />
-            </div>
+        <>
+            {/* Backdrop for mobile */}
+            {isOpen && (
+                <div 
+                    className="fixed inset-0 bg-black/50 z-20 md:hidden transition-opacity" 
+                    onClick={() => setIsOpen(false)}
+                />
+            )}
             
-            <nav className="flex-1 px-4 py-8 space-y-2">
-                <p className="px-4 text-xs font-black uppercase tracking-widest text-primary-900/70 mb-4 drop-shadow-sm">Menu</p>
-                {links.filter(l => !l.role || l.role === userRole).map(link => {
-                    const isActive = location.pathname.startsWith(link.path);
-                    return (
-                        <Link key={link.name} to={link.path} 
-                              className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-300 font-bold ${
-                                  isActive 
-                                    ? 'bg-white shadow-[0_2px_10px_rgba(0,0,0,0.1)] text-primary-800 border-none' 
-                                    : 'hover:bg-primary-600/30 text-slate-800 hover:text-slate-900 hover:shadow-sm'
-                              }`}>
-                            <span className={isActive ? "text-primary-600" : "text-slate-700 group-hover:text-slate-900"}>{link.icon}</span>
-                            <span>{link.name}</span>
-                        </Link>
-                    )
-                })}
-            </nav>
-            
-            <div className="p-4 border-t border-primary-600 bg-primary-600/10">
-                <button onClick={logout} className="flex items-center space-x-3 px-4 py-3 w-full text-left rounded-xl hover:bg-red-500 hover:text-white hover:shadow-lg text-slate-800 font-bold transition-all group">
-                    <svg className="w-5 h-5 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
-                    <span>Sign Out</span>
-                </button>
+            <div className={`fixed inset-y-0 left-0 z-30 w-64 bg-primary text-slate-800 flex flex-col border-r border-primary-600 shadow-2xl transform transition-transform duration-300 md:relative md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+                <div className="p-4 border-b border-primary-600 flex justify-between md:justify-center items-center bg-white shadow-sm h-20 shrink-0">
+                    <img src="/logo.png" alt="Ministry Logo" className="h-12 object-contain filter drop-shadow-sm" />
+                    <button onClick={() => setIsOpen(false)} className="md:hidden text-gray-500 hover:text-gray-800 p-2">
+                        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
+                
+                <nav className="flex-1 px-4 py-8 space-y-2 overflow-y-auto">
+                    <p className="px-4 text-xs font-black uppercase tracking-widest text-primary-900/70 mb-4 drop-shadow-sm">Menu</p>
+                    {links.filter(l => !l.role || l.role === userRole).map(link => {
+                        const isActive = location.pathname.startsWith(link.path);
+                        return (
+                            <Link key={link.name} to={link.path} 
+                                onClick={() => setIsOpen(false)}
+                                className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-300 font-bold ${
+                                    isActive 
+                                        ? 'bg-white shadow-[0_2px_10px_rgba(0,0,0,0.1)] text-primary-800 border-none' 
+                                        : 'hover:bg-primary-600/30 text-slate-800 hover:text-slate-900 hover:shadow-sm'
+                                }`}>
+                                <span className={isActive ? "text-primary-600" : "text-slate-700 group-hover:text-slate-900"}>{link.icon}</span>
+                                <span>{link.name}</span>
+                            </Link>
+                        )
+                    })}
+                </nav>
+                
+                <div className="p-4 border-t border-primary-600 bg-primary-600/10 shrink-0">
+                    <button onClick={logout} className="flex items-center space-x-3 px-4 py-3 w-full text-left rounded-xl hover:bg-red-500 hover:text-white hover:shadow-lg text-slate-800 font-bold transition-all group">
+                        <svg className="w-5 h-5 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                        <span>Sign Out</span>
+                    </button>
+                </div>
             </div>
-        </div>
+        </>
     );
 }
