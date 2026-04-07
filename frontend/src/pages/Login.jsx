@@ -26,50 +26,50 @@ export default function Login() {
     };
 
     return (
-        <div className="flex min-h-screen bg-white">
-            {/* Left Informational Side - Hidden on smaller screens */}
-            <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary-900 via-primary-800 to-slate-900 text-white relative overflow-hidden flex-col justify-between p-12">
+        <div className="flex flex-col lg:flex-row min-h-screen bg-white">
+            {/* Left Informational Side */}
+            <div className="w-full lg:w-1/2 bg-primary text-slate-900 relative overflow-hidden flex flex-col justify-center lg:justify-between p-8 md:p-12">
                 {/* Abstract Background Design */}
-                <div className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-20 pointer-events-none">
-                    <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-primary-400 blur-3xl"></div>
-                    <div className="absolute top-1/2 -left-20 w-72 h-72 rounded-full bg-blue-500 blur-3xl"></div>
+                <div className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-30 pointer-events-none">
+                    <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-white blur-3xl"></div>
+                    <div className="absolute top-1/2 -left-20 w-72 h-72 rounded-full bg-white blur-3xl"></div>
                 </div>
 
                 <div className="relative z-10">
-                    <div className="bg-white/10 backdrop-blur-sm inline-flex p-3 rounded-2xl mb-8 border border-white/20">
-                        <img src="/logo.png" alt="Ministry Logo" className="h-[60px] object-contain drop-shadow-lg" />
+                    <div className="bg-white/40 backdrop-blur-sm inline-flex p-3 rounded-2xl mb-8 border border-white/50">
+                        <img src="/logo.png" alt="Ministry Logo" className="h-[50px] md:h-[60px] object-contain drop-shadow-md" />
                     </div>
-                    <h1 className="text-5xl font-black mb-6 leading-tight tracking-tight">
+                    <h1 className="text-4xl md:text-5xl font-black mb-6 leading-tight tracking-tight text-slate-900">
                         Empowering Youth<br/>
-                        <span className="text-primary-400">Through Excellence</span>
+                        <span className="text-slate-800 opacity-90">Through Excellence</span>
                     </h1>
-                    <p className="text-lg text-primary-100/90 leading-relaxed max-w-lg mb-8 font-medium">
+                    <p className="text-base md:text-lg text-slate-800 leading-relaxed max-w-lg mb-8 font-medium">
                         Welcome to the State Department for Petroleum's E-Recruitment Portal. This platform is purposefully built to ensure transparent, merit-based, and seamless processing of internship and industrial attachment opportunities.
                     </p>
                     
                     <div className="space-y-6">
                         <div className="flex items-start space-x-4">
-                            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 border border-white/20">
-                                <svg className="w-5 h-5 text-primary-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <div className="w-10 h-10 rounded-full bg-white/40 flex items-center justify-center shrink-0 border border-white/50">
+                                <svg className="w-5 h-5 text-slate-800" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                             </div>
                             <div>
-                                <h3 className="font-bold text-white">Automated Verification</h3>
-                                <p className="text-sm text-primary-200/80">Intelligent criteria matching ensures fair vetting</p>
+                                <h3 className="font-bold text-slate-900">Automated Verification</h3>
+                                <p className="text-sm text-slate-800/80">Intelligent criteria matching ensures fair vetting</p>
                             </div>
                         </div>
                         <div className="flex items-start space-x-4">
-                            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 border border-white/20">
-                                <svg className="w-5 h-5 text-primary-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                            <div className="w-10 h-10 rounded-full bg-white/40 flex items-center justify-center shrink-0 border border-white/50">
+                                <svg className="w-5 h-5 text-slate-800" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
                             </div>
                             <div>
-                                <h3 className="font-bold text-white">Secure Processing</h3>
-                                <p className="text-sm text-primary-200/80">Multi-stage document validations and security compliance</p>
+                                <h3 className="font-bold text-slate-900">Secure Processing</h3>
+                                <p className="text-sm text-slate-800/80">Multi-stage document validations and security compliance</p>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <div className="relative z-10 pt-12 text-sm text-primary-300/60 font-medium">
+                <div className="relative z-10 pt-12 text-sm text-slate-800/80 font-bold">
                     &copy; {new Date().getFullYear()} State Department for Petroleum. All rights reserved.
                 </div>
             </div>
@@ -77,12 +77,6 @@ export default function Login() {
             {/* Right Login Form Side */}
             <div className="w-full lg:w-1/2 flex items-center justify-center bg-gray-50/50 p-6 md:p-12 relative">
                 <div className="w-full max-w-md">
-                    {/* Mobile Logo Only */}
-                    <div className="lg:hidden text-center mb-8">
-                        <img src="/logo.png" alt="Ministry Logo" className="h-[75px] object-contain drop-shadow-sm mx-auto mb-4" />
-                        <h2 className="text-2xl font-extrabold text-gray-900 tracking-tight">SDP Career Portal</h2>
-                    </div>
-
                     <form onSubmit={handleSubmit} className="bg-white p-8 md:p-10 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 transition-all">
                         <div className="text-center mb-10">
                             <h2 className="text-3xl font-black text-gray-900 tracking-tight">Sign In</h2>
