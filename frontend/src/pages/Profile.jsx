@@ -147,6 +147,18 @@ export default function Profile() {
                             <h3 className="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">General Information (Required)</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                                 <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-2">First Name</label>
+                                    <input type="text" name="first_name" value={profile.first_name || ''} onChange={handleProfileChange} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-200 focus:border-primary-400 outline-none" required />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-2">Last Name</label>
+                                    <input type="text" name="last_name" value={profile.last_name || ''} onChange={handleProfileChange} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-200 focus:border-primary-400 outline-none" required />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
+                                    <input type="email" name="email" value={profile.email || ''} onChange={handleProfileChange} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-200 focus:border-primary-400 outline-none" required />
+                                </div>
+                                <div>
                                     <label className="block text-sm font-semibold text-gray-700 mb-2">Middle Name</label>
                                     <input type="text" name="middle_name" value={profile.middle_name || ''} onChange={handleProfileChange} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-200 focus:border-primary-400 outline-none" />
                                 </div>
@@ -213,10 +225,16 @@ export default function Profile() {
                                     <input type="text" name="qualification" placeholder="Qualification (e.g. BSc, Diploma)" className="p-3 border rounded-xl" required />
                                     <input type="text" name="field_of_study" placeholder="Field of Study" className="p-3 border rounded-xl" required />
                                     <input type="text" name="grade_award" placeholder="Grade/Award (e.g. First Class)" className="p-3 border rounded-xl" required />
-                                    <input type="date" name="start_date" className="p-3 border rounded-xl" required />
-                                    <div className="flex items-center space-x-2">
-                                         <input type="date" name="end_date" className="p-3 border rounded-xl flex-1" />
-                                         <label className="text-sm"><input type="checkbox" name="is_current" className="mr-1"/> Current</label>
+                                    <div>
+                                        <label className="block text-xs font-semibold text-gray-500 mb-1 ml-1">Start Date</label>
+                                        <input type="date" name="start_date" className="p-3 border rounded-xl w-full" required />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-semibold text-gray-500 mb-1 ml-1">End Date</label>
+                                        <div className="flex items-center space-x-2">
+                                             <input type="date" name="end_date" className="p-3 border rounded-xl flex-1" />
+                                             <label className="text-sm shrink-0 whitespace-nowrap"><input type="checkbox" name="is_current" className="mr-1"/> Current</label>
+                                        </div>
                                     </div>
                                 </div>
                                 <button type="submit" className="bg-primary-600 text-white px-6 py-2 rounded-xl font-bold">Add Education</button>
@@ -253,10 +271,16 @@ export default function Profile() {
                                     <input type="text" name="organization" placeholder="Employer / Organization" className="p-3 border rounded-xl" required />
                                     <input type="text" name="job_title" placeholder="Job Title / Role" className="p-3 border rounded-xl" required />
                                     <input type="text" name="employer_contact" placeholder="Employer Contact (Phone/Email)" className="p-3 border rounded-xl" />
-                                    <input type="date" name="start_date" className="p-3 border rounded-xl" required />
-                                    <div className="flex items-center space-x-2">
-                                         <input type="date" name="end_date" className="p-3 border rounded-xl flex-1" />
-                                         <label className="text-sm"><input type="checkbox" name="is_current" className="mr-1"/> Current</label>
+                                    <div>
+                                        <label className="block text-xs font-semibold text-gray-500 mb-1 ml-1">Start Date</label>
+                                        <input type="date" name="start_date" className="p-3 border rounded-xl w-full" required />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-semibold text-gray-500 mb-1 ml-1">End Date</label>
+                                        <div className="flex items-center space-x-2">
+                                             <input type="date" name="end_date" className="p-3 border rounded-xl flex-1" />
+                                             <label className="text-sm shrink-0 whitespace-nowrap"><input type="checkbox" name="is_current" className="mr-1"/> Current</label>
+                                        </div>
                                     </div>
                                     <textarea name="responsibilities" placeholder="Key Responsibilities" className="p-3 border rounded-xl md:col-span-2" rows="3"></textarea>
                                 </div>
