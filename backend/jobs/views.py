@@ -103,6 +103,8 @@ class ApplicationDetailView(generics.RetrieveUpdateDestroyAPIView):
         return qs.filter(user=self.request.user)
 
 from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 class ApplicationStatusUpdateView(APIView):
     permission_classes = (IsAdminOrReadOnly,)
@@ -120,8 +122,6 @@ class ApplicationStatusUpdateView(APIView):
             return Response({"detail": f"Application marked as {new_status}.", "status": instance.status})
         return Response({"detail": "Invalid status."}, status=status.HTTP_400_BAD_REQUEST)
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from django.utils import timezone
 from datetime import timedelta
 from django.db.models.functions import TruncDate, TruncMonth, TruncWeek, TruncYear
