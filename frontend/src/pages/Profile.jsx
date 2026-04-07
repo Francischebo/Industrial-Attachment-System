@@ -151,16 +151,16 @@ export default function Profile() {
                                     <input type="text" name="first_name" value={profile.first_name || ''} onChange={handleProfileChange} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-200 focus:border-primary-400 outline-none" required />
                                 </div>
                                 <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-2">Middle Name</label>
+                                    <input type="text" name="middle_name" value={profile.middle_name || ''} onChange={handleProfileChange} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-200 focus:border-primary-400 outline-none" />
+                                </div>
+                                <div>
                                     <label className="block text-sm font-semibold text-gray-700 mb-2">Last Name</label>
                                     <input type="text" name="last_name" value={profile.last_name || ''} onChange={handleProfileChange} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-200 focus:border-primary-400 outline-none" required />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
                                     <input type="email" name="email" value={profile.email || ''} onChange={handleProfileChange} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-200 focus:border-primary-400 outline-none" required />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-semibold text-gray-700 mb-2">Middle Name</label>
-                                    <input type="text" name="middle_name" value={profile.middle_name || ''} onChange={handleProfileChange} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-200 focus:border-primary-400 outline-none" />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-semibold text-gray-700 mb-2">Date of Birth</label>
