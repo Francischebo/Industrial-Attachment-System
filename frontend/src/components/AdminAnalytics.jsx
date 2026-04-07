@@ -5,14 +5,14 @@ import {
 import api from '../services/api';
 
 const COLORS = [
-  '#3B82F6', // Professionalism
-  '#14B8A6', // Transparency
-  '#8B5CF6', // Innovativeness
-  '#F97316', // Stakeholder
-  '#EC4899', // Customer Centric
-  '#E3BC75', // Teamwork
-  '#22C55E', // Sustainability
-  '#0EA5E9', // Inclusivity
+  '#1E3A8A', // Professionalism & Integrity (Navy)
+  '#0D9488', // Transparency & Accountability (Teal)
+  '#7C3AED', // Innovativeness (Purple)
+  '#EA580C', // Stakeholder participation (Orange)
+  '#DB2777', // Customer centric (Warm Pink)
+  '#E3BC75', // Teamwork & Commitment (Gold)
+  '#16A34A', // Sustainability (Forest Green)
+  '#0284C7', // Inclusivity & impartiality (Sky Blue)
 ];
 
 export default function AdminAnalytics() {
@@ -56,12 +56,12 @@ export default function AdminAnalytics() {
         <div className="animation-fade-in max-w-7xl mx-auto">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
                 <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">System Intelligence Dashboard</h2>
-                <div className="bg-white rounded-xl p-1 shadow-sm border border-gray-200 inline-flex">
+                <div className="bg-white rounded-xl p-1 shadow-sm border border-gray-200 flex overflow-x-auto whitespace-nowrap w-full md:w-auto scrollbar-hide">
                     {['daily', 'weekly', 'monthly', 'yearly'].map((p) => (
                         <button
                             key={p}
                             onClick={() => setPeriod(p)}
-                            className={`px-4 py-2 text-sm font-bold rounded-lg transition-all capitalize ${period === p ? 'bg-primary text-white shadow-md' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'}`}
+                            className={`flex-1 md:flex-none px-4 py-2 text-sm font-bold rounded-lg transition-all capitalize ${period === p ? 'bg-primary text-white shadow-md' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'}`}
                         >
                             {p}
                         </button>

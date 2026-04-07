@@ -128,7 +128,7 @@ export default function ManageUsers() {
                                         )}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <div className="flex items-center justify-end space-x-3">
+                                        <div className="flex flex-col sm:flex-row items-end sm:items-center justify-end space-y-2 sm:space-y-0 sm:space-x-3">
                                             {u.id !== currentUser?.id && (
                                                 <>
                                                     {u.role === 'APPLICANT' ? (

@@ -9,6 +9,7 @@ export default function Vacancies() {
     const [isProfileComplete, setIsProfileComplete] = useState(false);
     const [checkingProfile, setCheckingProfile] = useState(true);
     const userRole = useAuthStore(state => state.user?.role || 'APPLICANT');
+    const [successMessage, setSuccessMessage] = useState('');
 
     // Admin Job Modal State
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -69,9 +70,10 @@ export default function Vacancies() {
     const applyForJob = async (jobId) => {
         try {
             await api.post('careers/applications/', { job: jobId, cover_letter: 'Standard application' });
-            alert('Application submitted successfully!');
+            setSuccessMessage('Your application has been safely submitted and is now under automated review.');
+            setTimeout(() => setSuccessMessage(''), 5000);
         } catch (error) {
-            alert('Failed to apply. You might have already applied.');
+            alert('Failed to apply. You might have already applied or your profile does not meet the minimum ATS requirements.');
         }
     };
 
@@ -143,6 +145,20 @@ export default function Vacancies() {
 
     return (
         <div className="animation-fade-in max-w-7xl mx-auto relative px-4 sm:px-6 lg:px-8">
+            {/* Success Alert popup */}
+            {successMessage && (
+                <div className="fixed top-20 right-4 md:right-8 z-50 animation-fade-in bg-green-50 border-l-4 border-green-500 p-4 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] max-w-sm flex items-start border border-y-green-200 border-r-green-200">
+                    <svg className="w-6 h-6 text-green-500 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <div>
+                        <h4 className="text-green-800 font-bold mb-1">Application Submitted!</h4>
+                        <p className="text-green-700 text-sm font-medium">{successMessage}</p>
+                    </div>
+                    <button onClick={() => setSuccessMessage('')} className="ml-4 text-green-500 hover:text-green-700 transition-colors">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+            )}
+            
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
                 <div>
                     <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Available Vacancies</h2>

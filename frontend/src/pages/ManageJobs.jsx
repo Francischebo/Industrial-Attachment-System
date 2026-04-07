@@ -51,16 +51,16 @@ export default function ManageJobs() {
     const filteredApps = applications.filter(app => filterType === 'ALL' || app.job_type === filterType);
 
     return (
-        <div className="animation-fade-in max-w-7xl mx-auto">
+        <div className="animation-fade-in max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between">
                 <div>
                     <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Applicant Attachments Dashboard</h2>
                     <p className="text-gray-500 font-medium mt-1">Review candidates and their accurately mapped PDF requirements.</p>
                 </div>
-                <div className="mt-4 md:mt-0 flex border border-gray-200 rounded-xl bg-white p-1 shadow-sm">
-                    <button onClick={() => setFilterType('ALL')} className={`px-4 py-2 font-bold text-sm rounded-lg transition-colors ${filterType === 'ALL' ? 'bg-primary-600 text-white' : 'text-gray-500 hover:bg-gray-100'}`}>All Apps</button>
-                    <button onClick={() => setFilterType('INTERNSHIP')} className={`px-4 py-2 font-bold text-sm rounded-lg transition-colors ${filterType === 'INTERNSHIP' ? 'bg-primary-600 text-white' : 'text-gray-500 hover:bg-gray-100'}`}>Internships</button>
-                    <button onClick={() => setFilterType('ATTACHMENT')} className={`px-4 py-2 font-bold text-sm rounded-lg transition-colors ${filterType === 'ATTACHMENT' ? 'bg-primary-600 text-white' : 'text-gray-500 hover:bg-gray-100'}`}>Attachments</button>
+                <div className="mt-4 md:mt-0 flex overflow-x-auto whitespace-nowrap scrollbar-hide border border-gray-200 rounded-xl bg-white p-1 shadow-sm w-full md:w-auto">
+                    <button onClick={() => setFilterType('ALL')} className={`flex-1 md:flex-none px-4 py-2 font-bold text-sm rounded-lg transition-colors ${filterType === 'ALL' ? 'bg-primary-600 text-white' : 'text-gray-500 hover:bg-gray-100'}`}>All Apps</button>
+                    <button onClick={() => setFilterType('INTERNSHIP')} className={`flex-1 md:flex-none px-4 py-2 font-bold text-sm rounded-lg transition-colors ${filterType === 'INTERNSHIP' ? 'bg-primary-600 text-white' : 'text-gray-500 hover:bg-gray-100'}`}>Internships</button>
+                    <button onClick={() => setFilterType('ATTACHMENT')} className={`flex-1 md:flex-none px-4 py-2 font-bold text-sm rounded-lg transition-colors ${filterType === 'ATTACHMENT' ? 'bg-primary-600 text-white' : 'text-gray-500 hover:bg-gray-100'}`}>Attachments</button>
                 </div>
             </div>
 

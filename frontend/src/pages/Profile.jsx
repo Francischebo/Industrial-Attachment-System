@@ -126,12 +126,12 @@ export default function Profile() {
             
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row overflow-hidden">
                 {/* Sidebar Navigation */}
-                <div className="w-full md:w-64 bg-gray-50 border-b md:border-b-0 md:border-r border-gray-200 p-6 flex flex-col space-y-2 relative z-10">
+                <div className="w-full md:w-64 bg-gray-50 border-b md:border-b-0 md:border-r border-gray-200 p-4 md:p-6 flex flex-row md:flex-col overflow-x-auto space-x-2 md:space-x-0 space-y-0 md:space-y-2 relative z-10 whitespace-nowrap scrollbar-hide">
                     {tabs.map(tab => (
                         <button
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id)}
-                            className={`text-left px-5 py-3 rounded-xl font-bold transition-all ${activeTab === tab.id ? 'bg-primary text-white shadow-md' : 'text-gray-600 hover:bg-gray-200'}`}
+                            className={`text-sm md:text-base text-left px-4 md:px-5 py-2.5 md:py-3 rounded-xl font-bold transition-all shrink-0 ${activeTab === tab.id ? 'bg-primary text-white shadow-md' : 'text-gray-600 hover:bg-gray-200'}`}
                         >
                             {tab.label}
                         </button>
