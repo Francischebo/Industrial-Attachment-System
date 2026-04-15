@@ -5,6 +5,7 @@ from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.throttling import AnonRateThrottle
 from .models import Profile, Education, Experience, Training, ProfessionalMembership, Document
 from .serializers import (
     UserSerializer, RegisterSerializer, ProfileSerializer, 
@@ -13,9 +14,60 @@ from .serializers import (
     CustomTokenObtainPairSerializer
 )
 from jobs.models import Application
+import string
+import random
+from rest_framework_simplejwt.tokens import RefreshToken
+from .utils import verify_google_token
+
+class AuthThrottle(AnonRateThrottle):
+    scope = 'auth'
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
+    throttle_classes = [AuthThrottle]
+
+class GoogleLoginView(APIView):
+    permission_classes = (permissions.AllowAny,)
+    throttle_classes = [AuthThrottle]
+
+    def post(self, request):
+        token = request.data.get('tokenId')
+        if not token:
+            return Response({'error': 'Token is required'}, status=status.HTTP_400_BAD_REQUEST)
+            
+        try:
+            idinfo = verify_google_token(token)
+            email = idinfo.get('email')
+            first_name = idinfo.get('given_name', '')
+            last_name = idinfo.get('family_name', '')
+            
+            user = User.objects.filter(email=email).first()
+            if not user:
+                user = User.objects.create_user(
+                    username=email,
+                    email=email,
+                    password=''.join(random.choices(string.ascii_letters + string.digits, k=16)),
+                    first_name=first_name,
+                    last_name=last_name,
+                    role='APPLICANT'
+                )
+            
+            refresh = RefreshToken.for_user(user)
+            return Response({
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+                'user': {
+                    'id': user.id,
+                    'username': user.username,
+                    'email': user.email,
+                    'role': user.role,
+                    'first_name': user.first_name,
+                    'last_name': user.last_name,
+                }
+            }, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 class IsAdminRole(permissions.BasePermission):
     def has_permission(self, request, view):
@@ -27,6 +79,7 @@ class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     permission_classes = (permissions.AllowAny,)
     serializer_class = RegisterSerializer
+    throttle_classes = [AuthThrottle]
 
 class ProfileDetailView(generics.RetrieveUpdateAPIView):
     serializer_class = ProfileSerializer

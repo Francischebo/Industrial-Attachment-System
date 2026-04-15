@@ -11,7 +11,9 @@ import useAuthStore from './store/authStore';
 
 const PrivateRoute = ({ children }) => {
     const isAuthenticated = useAuthStore(state => state.isAuthenticated);
-    return isAuthenticated ? children : <Navigate to="/login" />;
+    const userRole = useAuthStore(state => state.user?.role);
+    if (!isAuthenticated) return <Navigate to="/login" />;
+    return userRole === 'ADMIN' ? <Navigate to="/manage-jobs" /> : children;
 };
 
 const AdminRoute = ({ children }) => {

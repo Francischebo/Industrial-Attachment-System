@@ -8,12 +8,13 @@ from .views import (
     MembershipListCreateView, MembershipDetailView,
     DocumentListCreateView, DocumentDetailView, ProtectedMediaView,
     UserManagementListView, UserManagementDetailView, CustomTokenObtainPairView,
-    DashboardStatsView
+    DashboardStatsView, GoogleLoginView
 )
 
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
     path('login/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('google-login/', GoogleLoginView.as_view(), name='google_login'),
     path('refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     
     path('dashboard-stats/', DashboardStatsView.as_view(), name='dashboard-stats'),

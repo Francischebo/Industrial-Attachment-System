@@ -1,17 +1,33 @@
 import { useState } from 'react';
 import useAuthStore from '../store/authStore';
 import api from '../services/api';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import ReCAPTCHA from 'react-google-recaptcha';
+import { GoogleLogin } from '@react-oauth/google';
 
 export default function Login() {
     const [credentials, setCredentials] = useState({ username: '', password: '' });
+    const [recaptchaToken, setRecaptchaToken] = useState(null);
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
     const setAuth = useAuthStore(state => state.setAuth);
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError('');
+        
+        if (!recaptchaToken) {
+            setError('Please complete the reCAPTCHA validation.');
+            return;
+        }
+
+        setLoading(true);
         try {
-            const { data } = await api.post('accounts/login/', credentials);
+            const { data } = await api.post('accounts/login/', {
+                ...credentials,
+                recaptcha: recaptchaToken
+            });
             const userData = data.user || { username: credentials.username };
             setAuth(userData, data.access);
             
@@ -20,8 +36,11 @@ export default function Login() {
             } else {
                 navigate('/dashboard');
             }
-        } catch (error) {
-            console.error('Login failed', error);
+        } catch (err) {
+            console.error('Login failed', err);
+            setError('Invalid email or password. Please try again.');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -82,15 +101,22 @@ export default function Login() {
                             <h2 className="text-3xl font-black text-gray-900 tracking-tight">Sign In</h2>
                             <p className="text-sm text-gray-500 mt-2 font-medium">Access your portal applicant dashboard</p>
                         </div>
+                        
+                        {error && (
+                            <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm font-medium animate-pulse">
+                                {error}
+                            </div>
+                        )}
+                        
                         <div className="space-y-6">
                             <div className="relative group">
-                                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block group-focus-within:text-primary-600 transition-colors">Username</label>
+                                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block group-focus-within:text-primary-600 transition-colors">Email Address</label>
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                         <svg className="h-5 w-5 text-gray-400 group-focus-within:text-primary-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                                     </div>
                                     <input
-                                        type="text" placeholder="Enter your username"
+                                        type="email" placeholder="john.doe@example.com"
                                         className="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-primary-100 focus:border-primary-400 focus:outline-none transition-all placeholder-gray-400 font-medium text-gray-900"
                                         value={credentials.username}
                                         onChange={e => setCredentials({...credentials, username: e.target.value})}
@@ -111,17 +137,56 @@ export default function Login() {
                                     />
                                 </div>
                             </div>
-                            <button type="submit" className="w-full bg-primary hover:bg-primary-600 text-white font-bold py-4 rounded-xl shadow-[0_4px_14px_0_rgba(227,188,117,0.39)] hover:shadow-[0_6px_20px_rgba(227,188,117,0.23)] hover:-translate-y-0.5 transition-all duration-300 mt-4 flex justify-center items-center gap-2">
-                                Sign In to Portal
+                            
+                            <div className="pt-2 flex justify-center">
+                                <ReCAPTCHA
+                                    sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+                                    onChange={(token) => setRecaptchaToken(token)}
+                                    theme="light"
+                                />
+                            </div>
+
+                            <button type="submit" disabled={loading} className={`w-full bg-primary hover:bg-primary-600 text-white font-bold py-4 rounded-xl shadow-[0_4px_14px_0_rgba(227,188,117,0.39)] hover:shadow-[0_6px_20px_rgba(227,188,117,0.23)] hover:-translate-y-0.5 transition-all duration-300 mt-4 flex justify-center items-center gap-2 ${loading ? 'opacity-70 cursor-wait' : ''}`}>
+                                {loading ? 'Signing In...' : 'Sign In to Portal'}
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                             </button>
                         </div>
-                        <div className="mt-8 text-center border-t border-gray-100 pt-6">
+                        
+                        <div className="mt-8 flex flex-col items-center gap-4 border-t border-gray-100 pt-6">
+                            <p className="text-gray-500 text-sm font-bold">Or log in with</p>
+                            <GoogleLogin 
+                                onSuccess={async (credentialResponse) => {
+                                    try {
+                                        const { data } = await api.post('accounts/google-login/', { 
+                                            tokenId: credentialResponse.credential 
+                                        });
+                                        const userData = data.user;
+                                        setAuth(userData, data.access);
+                                        
+                                        if (userData.role === 'ADMIN') {
+                                            navigate('/manage-jobs');
+                                        } else {
+                                            navigate('/dashboard');
+                                        }
+                                    } catch (err) {
+                                        console.error('Google login failed', err);
+                                        setError('Google authentication failed. Please try again.');
+                                    }
+                                }}
+                                onError={() => {
+                                    console.log('Login Failed');
+                                    setError('Google login was cancelled or failed.');
+                                }}
+                                useOneTap
+                            />
+                        </div>
+
+                        <div className="mt-6 text-center">
                             <p className="text-gray-600 text-sm font-medium">
                                 Don't have an account?{' '}
-                                <a href="/register" className="font-bold text-primary-600 hover:text-primary-800 hover:underline transition-colors decoration-2 underline-offset-4">
+                                <Link to="/register" className="font-bold text-primary-600 hover:text-primary-800 hover:underline transition-colors decoration-2 underline-offset-4">
                                     Create one here
-                                </a>
+                                </Link>
                             </p>
                         </div>
                     </form>
