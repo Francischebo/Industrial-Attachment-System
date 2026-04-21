@@ -41,11 +41,13 @@ export default function Dashboard({ children }) {
     };
     
     return (
-        <div className="flex h-screen bg-gray-50 font-sans overflow-hidden">
+        <div className="fixed inset-0 flex h-[100dvh] bg-gray-50 font-sans overflow-hidden w-full">
             <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
-            <div className="flex-1 flex flex-col transition-all duration-300 w-full overflow-hidden">
-                <Header onMenuClick={() => setIsSidebarOpen(true)} />
-                <main className="flex-1 p-4 md:p-8 overflow-y-auto bg-gray-50/50 relative">
+            <div className="flex-1 flex flex-col transition-all duration-300 w-full overflow-hidden h-full">
+                <div className="shrink-0 z-20 shadow-sm relative">
+                    <Header onMenuClick={() => setIsSidebarOpen(true)} />
+                </div>
+                <main className="flex-1 p-4 md:p-8 overflow-y-auto bg-gray-50/50 relative w-full h-full pb-20 md:pb-8">
                     {loading && !children && (
                         <div className="absolute inset-0 flex justify-center items-center bg-gray-50/80 z-20">
                             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
