@@ -11,9 +11,15 @@ import useAuthStore from './store/authStore';
 
 const PrivateRoute = ({ children }) => {
     const isAuthenticated = useAuthStore(state => state.isAuthenticated);
+    if (!isAuthenticated) return <Navigate to="/login" />;
+    return children;
+};
+
+const ApplicantRoute = ({ children }) => {
+    const isAuthenticated = useAuthStore(state => state.isAuthenticated);
     const userRole = useAuthStore(state => state.user?.role);
     if (!isAuthenticated) return <Navigate to="/login" />;
-    return userRole === 'ADMIN' ? <Navigate to="/manage-jobs" /> : children;
+    return userRole === 'ADMIN' ? <Navigate to="/dashboard" /> : children;
 };
 
 const AdminRoute = ({ children }) => {
@@ -31,9 +37,9 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
-          <Route path="/profile" element={<PrivateRoute><Dashboard><Profile /></Dashboard></PrivateRoute>} />
+          <Route path="/profile" element={<ApplicantRoute><Dashboard><Profile /></Dashboard></ApplicantRoute>} />
           <Route path="/vacancies" element={<PrivateRoute><Dashboard><Vacancies /></Dashboard></PrivateRoute>} />
-          <Route path="/applications" element={<PrivateRoute><Dashboard><Applications /></Dashboard></PrivateRoute>} />
+          <Route path="/applications" element={<ApplicantRoute><Dashboard><Applications /></Dashboard></ApplicantRoute>} />
           <Route path="/manage-jobs" element={<AdminRoute><Dashboard><ManageJobs /></Dashboard></AdminRoute>} />
           <Route path="/manage-users" element={<AdminRoute><Dashboard><ManageUsers /></Dashboard></AdminRoute>} />
           <Route path="/" element={<Navigate to="/dashboard" />} />
