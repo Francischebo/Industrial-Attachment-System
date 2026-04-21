@@ -37,7 +37,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
                 />
             )}
             
-            <div className={`fixed inset-y-0 left-0 z-30 w-64 bg-primary text-slate-800 flex flex-col border-r border-primary-600 shadow-2xl transform transition-transform duration-300 md:relative md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+            <div className={`fixed inset-y-0 left-0 z-30 w-64 bg-primary text-slate-800 flex flex-col border-r border-primary-600 shadow-2xl transform transition-all duration-300 md:relative md:translate-x-0 md:opacity-100 ${isOpen ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0 pointer-events-none md:pointer-events-auto'}`}>
                 <div className="p-4 border-b border-primary-600 flex justify-between md:justify-center items-center bg-white shadow-sm h-20 shrink-0">
                     <img src="/logo.png" alt="Ministry Logo" className="h-12 object-contain filter drop-shadow-sm" />
                     <button onClick={() => setIsOpen(false)} className="md:hidden text-gray-500 hover:text-gray-800 p-2">

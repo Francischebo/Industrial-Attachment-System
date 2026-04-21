@@ -6,12 +6,24 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.throttling import AnonRateThrottle
-from .models import Profile, Education, Experience, Training, ProfessionalMembership, Document
+from .models import (
+    Profile,
+    Education,
+    Experience,
+    Training,
+    ProfessionalMembership,
+    Document,
+)
 from .serializers import (
-    UserSerializer, RegisterSerializer, ProfileSerializer, 
-    EducationSerializer, ExperienceSerializer, TrainingSerializer, 
-    ProfessionalMembershipSerializer, DocumentSerializer, UserManagementSerializer,
-    CustomTokenObtainPairSerializer
+    RegisterSerializer,
+    ProfileSerializer,
+    EducationSerializer,
+    ExperienceSerializer,
+    TrainingSerializer,
+    ProfessionalMembershipSerializer,
+    DocumentSerializer,
+    UserManagementSerializer,
+    CustomTokenObtainPairSerializer,
 )
 from jobs.models import Application
 import string
@@ -19,61 +31,78 @@ import random
 from rest_framework_simplejwt.tokens import RefreshToken
 from .utils import verify_google_token
 
+
 class AuthThrottle(AnonRateThrottle):
-    scope = 'auth'
+    scope = "auth"
+
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
     throttle_classes = [AuthThrottle]
+
 
 class GoogleLoginView(APIView):
     permission_classes = (permissions.AllowAny,)
     throttle_classes = [AuthThrottle]
 
     def post(self, request):
-        token = request.data.get('tokenId')
+        token = request.data.get("tokenId")
         if not token:
-            return Response({'error': 'Token is required'}, status=status.HTTP_400_BAD_REQUEST)
-            
+            return Response(
+                {"error": "Token is required"}, status=status.HTTP_400_BAD_REQUEST
+            )
+
         try:
             idinfo = verify_google_token(token)
-            email = idinfo.get('email')
-            first_name = idinfo.get('given_name', '')
-            last_name = idinfo.get('family_name', '')
-            
+            email = idinfo.get("email")
+            first_name = idinfo.get("given_name", "")
+            last_name = idinfo.get("family_name", "")
+
             user = User.objects.filter(email=email).first()
             if not user:
                 user = User.objects.create_user(
                     username=email,
                     email=email,
-                    password=''.join(random.choices(string.ascii_letters + string.digits, k=16)),
+                    password="".join(
+                        random.choices(string.ascii_letters + string.digits, k=16)
+                    ),
                     first_name=first_name,
                     last_name=last_name,
-                    role='APPLICANT'
+                    role="APPLICANT",
                 )
-            
+
             refresh = RefreshToken.for_user(user)
-            return Response({
-                'refresh': str(refresh),
-                'access': str(refresh.access_token),
-                'user': {
-                    'id': user.id,
-                    'username': user.username,
-                    'email': user.email,
-                    'role': user.role,
-                    'first_name': user.first_name,
-                    'last_name': user.last_name,
-                }
-            }, status=status.HTTP_200_OK)
-            
+            return Response(
+                {
+                    "refresh": str(refresh),
+                    "access": str(refresh.access_token),
+                    "user": {
+                        "id": user.id,
+                        "username": user.username,
+                        "email": user.email,
+                        "role": user.role,
+                        "first_name": user.first_name,
+                        "last_name": user.last_name,
+                    },
+                },
+                status=status.HTTP_200_OK,
+            )
+
         except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class IsAdminRole(permissions.BasePermission):
     def has_permission(self, request, view):
-        return request.user and request.user.is_authenticated and getattr(request.user, 'role', '') == 'ADMIN'
+        return (
+            request.user
+            and request.user.is_authenticated
+            and getattr(request.user, "role", "") == "ADMIN"
+        )
+
 
 User = get_user_model()
+
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -81,161 +110,190 @@ class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
     throttle_classes = [AuthThrottle]
 
+
 class ProfileDetailView(generics.RetrieveUpdateAPIView):
     serializer_class = ProfileSerializer
     permission_classes = (permissions.IsAuthenticated,)
-    
+
     def get_object(self):
         obj, created = Profile.objects.get_or_create(user=self.request.user)
         return obj
 
+
 class EducationListCreateView(generics.ListCreateAPIView):
     serializer_class = EducationSerializer
     permission_classes = (permissions.IsAuthenticated,)
-    
+
     def get_queryset(self):
         return Education.objects.filter(user=self.request.user)
-        
+
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
 
 class EducationDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = EducationSerializer
     permission_classes = (permissions.IsAuthenticated,)
-    
+
     def get_queryset(self):
         return Education.objects.filter(user=self.request.user)
+
 
 class ExperienceListCreateView(generics.ListCreateAPIView):
     serializer_class = ExperienceSerializer
     permission_classes = (permissions.IsAuthenticated,)
-    
+
     def get_queryset(self):
         return Experience.objects.filter(user=self.request.user)
-        
+
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
 
 class ExperienceDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ExperienceSerializer
     permission_classes = (permissions.IsAuthenticated,)
-    
+
     def get_queryset(self):
         return Experience.objects.filter(user=self.request.user)
+
 
 class TrainingListCreateView(generics.ListCreateAPIView):
     serializer_class = TrainingSerializer
     permission_classes = (permissions.IsAuthenticated,)
-    
+
     def get_queryset(self):
         return Training.objects.filter(user=self.request.user)
-        
+
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
 
 class TrainingDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TrainingSerializer
     permission_classes = (permissions.IsAuthenticated,)
-    
+
     def get_queryset(self):
         return Training.objects.filter(user=self.request.user)
+
 
 class MembershipListCreateView(generics.ListCreateAPIView):
     serializer_class = ProfessionalMembershipSerializer
     permission_classes = (permissions.IsAuthenticated,)
-    
+
     def get_queryset(self):
         return ProfessionalMembership.objects.filter(user=self.request.user)
-        
+
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
 
 class MembershipDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProfessionalMembershipSerializer
     permission_classes = (permissions.IsAuthenticated,)
-    
+
     def get_queryset(self):
         return ProfessionalMembership.objects.filter(user=self.request.user)
+
 
 class DocumentListCreateView(generics.ListCreateAPIView):
     serializer_class = DocumentSerializer
     permission_classes = (permissions.IsAuthenticated,)
-    
+
     def get_queryset(self):
         return Document.objects.filter(user=self.request.user)
-        
+
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
 
 class DocumentDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = DocumentSerializer
     permission_classes = (permissions.IsAuthenticated,)
-    
+
     def get_queryset(self):
         return Document.objects.filter(user=self.request.user)
+
 
 class ProtectedMediaView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request, pk, format=None):
         document = get_object_or_404(Document, pk=pk)
-        
+
         # Check if the user is the owner or an admin
-        if document.user != request.user and request.user.role != 'ADMIN':
+        if document.user != request.user and request.user.role != "ADMIN":
             from django.core.exceptions import PermissionDenied
+
             raise PermissionDenied("You do not have permission to view this file.")
-            
+
         if not document.file:
             raise Http404("File not found")
-            
-        return FileResponse(document.file.open('rb'), content_type='application/pdf')
+
+        return FileResponse(document.file.open("rb"), content_type="application/pdf")
+
 
 class UserManagementListView(generics.ListAPIView):
-    queryset = User.objects.all().order_by('-date_joined')
+    queryset = User.objects.all().order_by("-date_joined")
     serializer_class = UserManagementSerializer
     permission_classes = (IsAdminRole,)
+
 
 class UserManagementDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserManagementSerializer
     permission_classes = (IsAdminRole,)
 
+
 class DashboardStatsView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request):
-        user = request.user
-        apps = Application.objects.filter(user=user).order_by('-applied_at')
-        applications_count = apps.count()
-        
+        user = (
+            User.objects.select_related("profile")
+            .prefetch_related("education", "documents")
+            .get(id=request.user.id)
+        )
+        apps_list = list(Application.objects.filter(user=user).order_by("-applied_at"))
+        applications_count = len(apps_list)
+
         latest_action = "None"
-        if apps.exists():
-            latest_action = apps.first().get_status_display()
-            
+        if apps_list:
+            latest_action = apps_list[0].get_status_display()
+
         score = 0
         try:
-            profile = getattr(user, 'profile', None)
+            profile = getattr(user, "profile", None)
             if profile:
-                fields_filled = bool(profile.middle_name and profile.dob and profile.gender and profile.id_number and profile.phone_number and profile.postal_address)
+                fields_filled = bool(
+                    profile.middle_name
+                    and profile.dob
+                    and profile.gender
+                    and profile.id_number
+                    and profile.phone_number
+                    and profile.postal_address
+                )
                 if fields_filled:
                     score += 20
         except Exception:
             pass
-            
+
         if user.education.exists():
             score += 30
-            
+
         doc_count = user.documents.count()
         if doc_count >= 4:
             score += 50
         elif doc_count > 0:
-            score += (doc_count * 12)
-            
+            score += doc_count * 12
+
         if score > 100:
             score = 100
-            
-        return Response({
-            "applications_count": applications_count,
-            "profile_completeness_percentage": score,
-            "latest_action": latest_action
-        })
+
+        return Response(
+            {
+                "applications_count": applications_count,
+                "profile_completeness_percentage": score,
+                "latest_action": latest_action,
+            }
+        )

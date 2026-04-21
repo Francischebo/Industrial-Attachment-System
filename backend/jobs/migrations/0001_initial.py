@@ -15,31 +15,83 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Job',
+            name="Job",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=200)),
-                ('description', models.TextField()),
-                ('requirements', models.TextField()),
-                ('job_type', models.CharField(choices=[('INTERNSHIP', 'Internship'), ('ATTACHMENT', 'Attachment'), ('JOB_OPENING', 'Job Opening')], max_length=20)),
-                ('location', models.CharField(max_length=150)),
-                ('deadline', models.DateTimeField()),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('is_active', models.BooleanField(default=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=200)),
+                ("description", models.TextField()),
+                ("requirements", models.TextField()),
+                (
+                    "job_type",
+                    models.CharField(
+                        choices=[
+                            ("INTERNSHIP", "Internship"),
+                            ("ATTACHMENT", "Attachment"),
+                            ("JOB_OPENING", "Job Opening"),
+                        ],
+                        max_length=20,
+                    ),
+                ),
+                ("location", models.CharField(max_length=150)),
+                ("deadline", models.DateTimeField()),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("is_active", models.BooleanField(default=True)),
             ],
         ),
         migrations.CreateModel(
-            name='Application',
+            name="Application",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('cover_letter', models.TextField(blank=True)),
-                ('status', models.CharField(choices=[('PENDING', 'Pending'), ('SHORTLISTED', 'Shortlisted'), ('REJECTED', 'Rejected'), ('HIRED', 'Hired')], default='PENDING', max_length=20)),
-                ('applied_at', models.DateTimeField(auto_now_add=True)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='applications', to=settings.AUTH_USER_MODEL)),
-                ('job', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='applications', to='jobs.job')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("cover_letter", models.TextField(blank=True)),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("PENDING", "Pending"),
+                            ("SHORTLISTED", "Shortlisted"),
+                            ("REJECTED", "Rejected"),
+                            ("HIRED", "Hired"),
+                        ],
+                        default="PENDING",
+                        max_length=20,
+                    ),
+                ),
+                ("applied_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="applications",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "job",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="applications",
+                        to="jobs.job",
+                    ),
+                ),
             ],
             options={
-                'unique_together': {('user', 'job')},
+                "unique_together": {("user", "job")},
             },
         ),
     ]

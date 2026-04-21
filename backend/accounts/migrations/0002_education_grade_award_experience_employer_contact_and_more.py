@@ -8,61 +8,101 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('accounts', '0001_initial'),
+        ("accounts", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='education',
-            name='grade_award',
+            model_name="education",
+            name="grade_award",
             field=models.CharField(blank=True, max_length=100),
         ),
         migrations.AddField(
-            model_name='experience',
-            name='employer_contact',
+            model_name="experience",
+            name="employer_contact",
             field=models.CharField(blank=True, max_length=100),
         ),
         migrations.AddField(
-            model_name='profile',
-            name='dob',
+            model_name="profile",
+            name="dob",
             field=models.DateField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='profile',
-            name='gender',
-            field=models.CharField(blank=True, choices=[('M', 'Male'), ('F', 'Female'), ('O', 'Other')], max_length=10),
+            model_name="profile",
+            name="gender",
+            field=models.CharField(
+                blank=True,
+                choices=[("M", "Male"), ("F", "Female"), ("O", "Other")],
+                max_length=10,
+            ),
         ),
         migrations.AddField(
-            model_name='profile',
-            name='marital_status',
-            field=models.CharField(blank=True, choices=[('SINGLE', 'Single'), ('MARRIED', 'Married'), ('DIVORCED', 'Divorced'), ('WIDOWED', 'Widowed')], max_length=20),
+            model_name="profile",
+            name="marital_status",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("SINGLE", "Single"),
+                    ("MARRIED", "Married"),
+                    ("DIVORCED", "Divorced"),
+                    ("WIDOWED", "Widowed"),
+                ],
+                max_length=20,
+            ),
         ),
         migrations.AddField(
-            model_name='profile',
-            name='middle_name',
+            model_name="profile",
+            name="middle_name",
             field=models.CharField(blank=True, max_length=150),
         ),
         migrations.AddField(
-            model_name='profile',
-            name='nationality',
-            field=models.CharField(default='Kenyan', max_length=100),
+            model_name="profile",
+            name="nationality",
+            field=models.CharField(default="Kenyan", max_length=100),
         ),
         migrations.AddField(
-            model_name='profile',
-            name='postal_address',
+            model_name="profile",
+            name="postal_address",
             field=models.CharField(blank=True, max_length=200),
         ),
         migrations.CreateModel(
-            name='Document',
+            name="Document",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('document_type', models.CharField(choices=[('TRANSCRIPT', 'Transcripts'), ('SCHOOL_ID', 'School ID'), ('NATIONAL_ID', 'National ID'), ('RESUME', 'Resume/CV'), ('COVER_LETTER', 'Cover Letter')], max_length=20)),
-                ('file', models.FileField(upload_to='secure_docs/')),
-                ('uploaded_at', models.DateTimeField(auto_now_add=True)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='documents', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "document_type",
+                    models.CharField(
+                        choices=[
+                            ("TRANSCRIPT", "Transcripts"),
+                            ("SCHOOL_ID", "School ID"),
+                            ("NATIONAL_ID", "National ID"),
+                            ("RESUME", "Resume/CV"),
+                            ("COVER_LETTER", "Cover Letter"),
+                        ],
+                        max_length=20,
+                    ),
+                ),
+                ("file", models.FileField(upload_to="secure_docs/")),
+                ("uploaded_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="documents",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'unique_together': {('user', 'document_type')},
+                "unique_together": {("user", "document_type")},
             },
         ),
     ]
