@@ -22,16 +22,23 @@ export default function AdminAnalytics() {
         status_distribution: [],
         job_type_distribution: [],
         average_ats_score: 0,
-        trend: []
+        trend: [],
+        period_label: "Monthly"
     });
     const [loading, setLoading] = useState(true);
-    const [period, setPeriod] = useState('monthly');
+    
+    // Default: Last 30 Days
+    const defaultEnd = new Date().toISOString().split('T')[0];
+    const defaultStart = new Date(new Date().setDate(new Date().getDate() - 30)).toISOString().split('T')[0];
+    
+    const [startDate, setStartDate] = useState(defaultStart);
+    const [endDate, setEndDate] = useState(defaultEnd);
 
     useEffect(() => {
         const fetchAnalytics = async () => {
             setLoading(true);
             try {
-                const response = await api.get(`/careers/analytics/?period=${period}`);
+                const response = await api.get(`/careers/analytics/?start_date=${startDate}&end_date=${endDate}`);
                 setStats(response.data);
             } catch (error) {
                 console.error("Failed to fetch analytics:", error);
@@ -40,7 +47,21 @@ export default function AdminAnalytics() {
             }
         };
         fetchAnalytics();
-    }, [period]);
+    }, [startDate, endDate]);
+
+    const handleStartDateChange = (e) => {
+        if (e.target.value > endDate) {
+            setEndDate(e.target.value);
+        }
+        setStartDate(e.target.value);
+    };
+
+    const handleEndDateChange = (e) => {
+        if (e.target.value < startDate) {
+            setStartDate(e.target.value);
+        }
+        setEndDate(e.target.value);
+    };
 
     const pieData = stats.status_distribution.map(s => ({
         name: s.status,
@@ -56,16 +77,26 @@ export default function AdminAnalytics() {
         <div className="animation-fade-in max-w-7xl mx-auto">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
                 <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">System Intelligence Dashboard</h2>
-                <div className="bg-white rounded-xl p-1 shadow-sm border border-gray-200 flex overflow-x-auto whitespace-nowrap w-full md:w-auto scrollbar-hide">
-                    {['daily', 'weekly', 'monthly', 'yearly'].map((p) => (
-                        <button
-                            key={p}
-                            onClick={() => setPeriod(p)}
-                            className={`flex-1 md:flex-none px-4 py-2 text-sm font-bold rounded-lg transition-all capitalize ${period === p ? 'bg-primary text-white shadow-md' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'}`}
-                        >
-                            {p}
-                        </button>
-                    ))}
+                <div className="bg-white rounded-xl p-2 shadow-sm border border-gray-200 flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+                    <div className="flex items-center w-full sm:w-auto">
+                        <span className="text-xs font-bold text-gray-500 uppercase mr-2 w-12 sm:w-auto text-right">From:</span>
+                        <input 
+                            type="date" 
+                            value={startDate} 
+                            onChange={handleStartDateChange}
+                            className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-primary focus:border-primary block p-2 font-bold cursor-pointer transition-colors w-full sm:w-36"
+                        />
+                    </div>
+                    <div className="flex items-center w-full sm:w-auto">
+                        <span className="text-xs font-bold text-gray-500 uppercase mr-2 w-12 sm:w-auto text-right">To:</span>
+                        <input 
+                            type="date" 
+                            value={endDate}
+                            onChange={handleEndDateChange}
+                            max={new Date().toISOString().split('T')[0]}
+                            className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-primary focus:border-primary block p-2 font-bold cursor-pointer transition-colors w-full sm:w-36"
+                        />
+                    </div>
                 </div>
             </div>
             
@@ -155,7 +186,7 @@ export default function AdminAnalytics() {
                         
                         {/* Application Trends (Area Chart) */}
                         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 md:col-span-2">
-                            <h3 className="text-lg font-bold text-gray-800 mb-6 capitalize">{period} Application Submissions Trend</h3>
+                            <h3 className="text-lg font-bold text-gray-800 mb-6 capitalize">{stats.period_label || 'Chronological'} Application Submissions Trend</h3>
                             <div className="h-72">
                                 <ResponsiveContainer width="100%" height="100%">
                                     <AreaChart data={stats.trend.length ? stats.trend : [{date: 'No Data', applications: 0}]}>

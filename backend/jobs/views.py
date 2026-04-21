@@ -204,28 +204,45 @@ class AnalyticsView(APIView):
     permission_classes = (IsAdminOrReadOnly,)
 
     def get(self, request):
-        period = request.query_params.get("period", "monthly").lower()
         now = timezone.now()
+        start_date_str = request.query_params.get("start_date")
+        end_date_str = request.query_params.get("end_date")
 
-        if period == "daily":
-            start_date = now - timedelta(days=7)
+        if start_date_str and end_date_str:
+            from datetime import datetime
+            try:
+                parsed_start = datetime.strptime(start_date_str, "%Y-%m-%d")
+                parsed_end = datetime.strptime(end_date_str, "%Y-%m-%d") + timedelta(days=1, seconds=-1)
+                start_date = timezone.make_aware(parsed_start) if timezone.is_naive(parsed_start) else parsed_start
+                end_date = timezone.make_aware(parsed_end) if timezone.is_naive(parsed_end) else parsed_end
+            except ValueError:
+                start_date = now - timedelta(days=30)
+                end_date = now
+        else:
+            start_date = now - timedelta(days=30)
+            end_date = now
+
+        delta_days = (end_date - start_date).days
+
+        if delta_days <= 45:
             trunc_func = TruncDate("applied_at")
             date_format = "%b %d"
-        elif period == "weekly":
-            start_date = now - timedelta(weeks=4)
+            period_label = "Daily"
+        elif delta_days <= 180:
             trunc_func = TruncWeek("applied_at")
             date_format = "%b %d"
-        elif period == "yearly":
-            start_date = now - timedelta(days=365 * 5)
-            trunc_func = TruncYear("applied_at")
-            date_format = "%Y"
-        else:  # monthly
-            start_date = now - timedelta(days=365)
+            period_label = "Weekly"
+        elif delta_days <= 730:
             trunc_func = TruncMonth("applied_at")
             date_format = "%b %Y"
+            period_label = "Monthly"
+        else:
+            trunc_func = TruncYear("applied_at")
+            date_format = "%Y"
+            period_label = "Yearly"
 
-        apps = Application.objects.filter(applied_at__gte=start_date)
-        jobs_qs = Job.objects.filter(created_at__gte=start_date)
+        apps = Application.objects.filter(applied_at__gte=start_date, applied_at__lte=end_date)
+        jobs_qs = Job.objects.filter(created_at__gte=start_date, created_at__lte=end_date)
 
         total_jobs = jobs_qs.count()
         total_applications = apps.count()
@@ -276,6 +293,6 @@ class AnalyticsView(APIView):
                 "job_type_distribution": formatted_job_type_dict,
                 "average_ats_score": round(avg_ats_score, 2),
                 "trend": trend,
-                "period": period,
+                "period_label": period_label,
             }
         )
