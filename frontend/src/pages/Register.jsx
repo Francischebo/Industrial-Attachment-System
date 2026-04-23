@@ -144,7 +144,7 @@ export default function Register() {
                         
                         <div className="relative">
                             <label className="text-sm font-semibold text-gray-700 mb-1 block">Username</label>
-                            <input type="text" name="username" placeholder="e.g. johndoe" className="w-full px-4 py-3 bg-white/50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-primary-200 focus:border-primary-400 focus:outline-none transition-all placeholder-gray-400" onChange={handleChange} required />
+                            <input type="text" name="username" placeholder="flname" className="w-full px-4 py-3 bg-white/50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-primary-200 focus:border-primary-400 focus:outline-none transition-all placeholder-gray-400" onChange={handleChange} required />
                         </div>
                         
                         <div className="relative">
