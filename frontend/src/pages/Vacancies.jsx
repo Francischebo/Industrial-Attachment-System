@@ -73,7 +73,8 @@ export default function Vacancies() {
             setSuccessMessage('Your application has been safely submitted and is now under automated review.');
             setTimeout(() => setSuccessMessage(''), 5000);
         } catch (error) {
-            alert('Failed to apply. You might have already applied or your profile does not meet the minimum ATS requirements.');
+            const serverMsg = error.response?.data?.detail || error.response?.data?.non_field_errors?.[0];
+            alert(serverMsg || 'Failed to apply. You might have already applied or your profile does not meet the minimum ATS requirements.');
         }
     };
 

@@ -27,7 +27,7 @@ class IsAdminOrReadOnly(permissions.BasePermission):
 
 
 class JobListCreateView(generics.ListCreateAPIView):
-    queryset = Job.objects.all()
+    queryset = Job.objects.all().order_by("-created_at")
     serializer_class = JobSerializer
     permission_classes = (IsAdminOrReadOnly,)
 
@@ -45,7 +45,7 @@ class ApplicationListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         qs = Application.objects.select_related(
             "job", "user", "user__profile"
-        ).prefetch_related("user__documents")
+        ).prefetch_related("user__documents").order_by("-applied_at")
         if self.request.user.role == "ADMIN":
             return qs.all()
         return qs.filter(user=self.request.user)
@@ -59,47 +59,17 @@ class ApplicationListCreateView(generics.ListCreateAPIView):
         job = serializer.validated_data["job"]
 
         # Cross-Validation Step
-        profile = getattr(user, "profile", None)
-        opp_type = profile.opportunity_type if profile else "NONE"
-        if opp_type == "NONE":
-            raise serializers.ValidationError(
-                {
-                    "detail": "Please configure your Profile Dashboard for Attachment or Internship before applying."
-                }
-            )
-
-        if opp_type != job.job_type:
-            raise serializers.ValidationError(
-                {
-                    "detail": f"Your profile is configured for {opp_type.lower()}s, but this is an {job.job_type.lower()} opening."
-                }
-            )
-
-        if opp_type == "INTERNSHIP":
-            reqs = [
-                "NATIONAL_ID",
-                "KRA_PIN",
-                "SHA_CARD",
-                "NSSF_CARD",
-                "BIRTH_CERT",
-                "ACADEMIC_CERT",
-                "SECRETS_ACT_FORM",
-                "PSIP_FORM",
-                "PASSPORT_PHOTOS",
-                "ATM_CARD",
-            ]
-        else:
-            reqs = [
-                "COVER_LETTER",
-                "INSTITUTION_INTRO",
-                "RESUME",
-                "TRANSCRIPT",
-                "GOOD_CONDUCT",
-                "STUDENT_INSURANCE",
-                "STUDENT_ID",
-                "NATIONAL_ID",
-                "NEXT_OF_KIN_ID",
-            ]
+        reqs = [
+            "COVER_LETTER",
+            "INSTITUTION_INTRO",
+            "RESUME",
+            "TRANSCRIPT",
+            "GOOD_CONDUCT",
+            "STUDENT_INSURANCE",
+            "STUDENT_ID",
+            "NATIONAL_ID",
+            "NEXT_OF_KIN_ID",
+        ]
 
         uploaded_docs = {doc.document_type for doc in user.documents.all()}
         missing_docs = [r for r in reqs if r not in uploaded_docs]
@@ -149,9 +119,8 @@ class ApplicationListCreateView(generics.ListCreateAPIView):
             ats_score = 100.0
         else:
             intersection = applicant_words.intersection(job_words)
-            union = applicant_words.union(job_words)
-            jaccard_similarity = len(intersection) / len(union) if union else 0
-            ats_score = round(jaccard_similarity * 100, 2)
+            match_ratio = len(intersection) / len(job_words)
+            ats_score = round(match_ratio * 100, 2)
 
             if ats_score < 20.0:
                 raise serializers.ValidationError(
@@ -170,7 +139,7 @@ class ApplicationDetailView(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         qs = Application.objects.select_related(
             "job", "user", "user__profile"
-        ).prefetch_related("user__documents")
+        ).prefetch_related("user__documents").order_by("-applied_at")
         if self.request.user.role == "ADMIN":
             return qs.all()
         return qs.filter(user=self.request.user)

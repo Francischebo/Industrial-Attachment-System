@@ -19,8 +19,6 @@ class User(AbstractUser):
 class Profile(models.Model):
     OPPORTUNITY_CHOICES = (
         ("ATTACHMENT", "Industrial Attachment"),
-        ("INTERNSHIP", "Youth Internship"),
-        ("NONE", "Not Selected"),
     )
     GENDER_CHOICES = (
         ("M", "Male"),
@@ -35,7 +33,7 @@ class Profile(models.Model):
     )
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     opportunity_type = models.CharField(
-        max_length=20, choices=OPPORTUNITY_CHOICES, default="NONE", db_index=True
+        max_length=20, choices=OPPORTUNITY_CHOICES, default="ATTACHMENT", db_index=True
     )
     middle_name = models.CharField(max_length=150, blank=True)
     dob = models.DateField(null=True, blank=True)

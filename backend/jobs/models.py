@@ -6,7 +6,6 @@ User = get_user_model()
 
 class Job(models.Model):
     JOB_TYPE_CHOICES = (
-        ("INTERNSHIP", "Internship"),
         ("ATTACHMENT", "Attachment"),
         ("JOB_OPENING", "Job Opening"),
     )
