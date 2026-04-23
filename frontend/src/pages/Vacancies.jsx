@@ -10,6 +10,14 @@ export default function Vacancies() {
     const [checkingProfile, setCheckingProfile] = useState(true);
     const userRole = useAuthStore(state => state.user?.role || 'APPLICANT');
     const [successMessage, setSuccessMessage] = useState('');
+    const [expandedJobs, setExpandedJobs] = useState({});
+
+    const toggleReadMore = (jobId) => {
+        setExpandedJobs(prev => ({
+            ...prev,
+            [jobId]: !prev[jobId]
+        }));
+    };
 
     // Admin Job Modal State
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -211,7 +219,20 @@ export default function Vacancies() {
                             
                             <div className="mb-8">
                                 <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Description</h4>
-                                <p className="text-sm text-gray-600 line-clamp-3 leading-relaxed">{job.description}</p>
+                                <div className="relative">
+                                    <p className={`text-sm text-gray-600 leading-relaxed whitespace-pre-wrap ${expandedJobs[job.id] ? '' : 'line-clamp-3'}`}>
+                                        {job.description}
+                                    </p>
+                                    {job.description && job.description.length > 150 && (
+                                        <button 
+                                            onClick={(e) => { e.stopPropagation(); toggleReadMore(job.id); }}
+                                            className="text-primary-600 hover:text-primary-700 text-xs font-bold mt-2 focus:outline-none flex items-center transition-colors"
+                                        >
+                                            {expandedJobs[job.id] ? 'Read less' : 'Read more'}
+                                            <svg className={`w-3 h-3 ml-1 transform transition-transform duration-200 ${expandedJobs[job.id] ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                                        </button>
+                                    )}
+                                </div>
                             </div>
                         </div>
                         
