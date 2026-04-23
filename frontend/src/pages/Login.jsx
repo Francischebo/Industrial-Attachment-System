@@ -138,7 +138,7 @@ export default function Login() {
                                         <svg className="h-5 w-5 text-gray-400 group-focus-within:text-primary-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                                     </div>
                                     <input
-                                        type="email" placeholder="john.doe@example.com"
+                                        type="email" placeholder="fnamelname@gmail.com"
                                         className="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-primary-100 focus:border-primary-400 focus:outline-none transition-all placeholder-gray-400 font-medium text-gray-900"
                                         value={credentials.username}
                                         onChange={e => setCredentials({...credentials, username: e.target.value})}

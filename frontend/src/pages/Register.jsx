@@ -134,11 +134,11 @@ export default function Register() {
                         <div className="grid grid-cols-2 gap-4">
                             <div className="relative">
                                 <label className="text-sm font-semibold text-gray-700 mb-1 block">First Name</label>
-                                <input type="text" name="first_name" placeholder="John" className="w-full px-4 py-3 bg-white/50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-primary-200 focus:border-primary-400 focus:outline-none transition-all placeholder-gray-400" onChange={handleChange} required />
+                                <input type="text" name="first_name" placeholder="fname" className="w-full px-4 py-3 bg-white/50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-primary-200 focus:border-primary-400 focus:outline-none transition-all placeholder-gray-400" onChange={handleChange} required />
                             </div>
                             <div className="relative">
                                 <label className="text-sm font-semibold text-gray-700 mb-1 block">Last Name</label>
-                                <input type="text" name="last_name" placeholder="Doe" className="w-full px-4 py-3 bg-white/50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-primary-200 focus:border-primary-400 focus:outline-none transition-all placeholder-gray-400" onChange={handleChange} required />
+                                <input type="text" name="last_name" placeholder="lname" className="w-full px-4 py-3 bg-white/50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-primary-200 focus:border-primary-400 focus:outline-none transition-all placeholder-gray-400" onChange={handleChange} required />
                             </div>
                         </div>
                         
@@ -149,7 +149,7 @@ export default function Register() {
                         
                         <div className="relative">
                             <label className="text-sm font-semibold text-gray-700 mb-1 block">Email Address</label>
-                            <input type="email" name="email" placeholder="john.doe@example.com" className="w-full px-4 py-3 bg-white/50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-primary-200 focus:border-primary-400 focus:outline-none transition-all placeholder-gray-400" onChange={handleChange} required />
+                            <input type="email" name="email" placeholder="fnamelname@gmail.com" className="w-full px-4 py-3 bg-white/50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-primary-200 focus:border-primary-400 focus:outline-none transition-all placeholder-gray-400" onChange={handleChange} required />
                         </div>
                         
                         <div className="relative">
