@@ -67,9 +67,9 @@ export default function Login() {
     };
 
     return (
-        <div className="flex flex-col lg:flex-row min-h-screen bg-white">
+        <div className="flex flex-col lg:flex-row min-h-screen bg-gray-50 lg:bg-white">
             {/* Left Informational Side */}
-            <div className="w-full lg:w-1/2 bg-primary text-slate-900 relative overflow-hidden flex flex-col justify-center lg:justify-between p-8 md:p-12">
+            <div className="w-full lg:w-1/2 bg-primary text-slate-900 relative overflow-hidden flex flex-col justify-start lg:justify-between px-6 pt-10 pb-20 lg:p-12">
                 {/* Abstract Background Design */}
                 <div className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-30 pointer-events-none">
                     <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-white blur-3xl"></div>
@@ -77,18 +77,18 @@ export default function Login() {
                 </div>
 
                 <div className="relative z-10">
-                    <div className="bg-white/40 backdrop-blur-sm inline-flex p-3 rounded-2xl mb-8 border border-white/50">
-                        <img src="/logo.png" alt="Ministry Logo" className="h-[50px] md:h-[60px] object-contain drop-shadow-md" />
+                    <div className="bg-white/40 backdrop-blur-sm inline-flex p-2 lg:p-3 rounded-2xl mb-6 lg:mb-8 border border-white/50">
+                        <img src="/logo.png" alt="Ministry Logo" className="h-[40px] md:h-[60px] object-contain drop-shadow-md" />
                     </div>
-                    <h1 className="text-4xl md:text-5xl font-black mb-6 leading-tight tracking-tight text-slate-900">
+                    <h1 className="text-3xl md:text-5xl font-black mb-4 lg:mb-6 leading-tight tracking-tight text-slate-900">
                         Empowering Youth<br/>
                         <span className="text-slate-800 opacity-90">Through Excellence</span>
                     </h1>
-                    <p className="text-base md:text-lg text-slate-800 leading-relaxed max-w-lg mb-8 font-medium">
-                        Welcome to the State Department for Petroleum's E-Recruitment Portal. This platform is purposefully built to ensure transparent, merit-based, and seamless processing of internship and industrial attachment opportunities.
+                    <p className="text-sm md:text-lg text-slate-800 leading-relaxed max-w-lg mb-6 lg:mb-8 font-medium">
+                        Welcome to the State Department for Petroleum's Industrial Attachment System. This platform is purposefully built to ensure transparent, merit-based, and seamless processing of industrial attachment opportunities.
                     </p>
                     
-                    <div className="space-y-6">
+                    <div className="hidden sm:block space-y-6">
                         <div className="flex items-start space-x-4">
                             <div className="w-10 h-10 rounded-full bg-white/40 flex items-center justify-center shrink-0 border border-white/50">
                                 <svg className="w-5 h-5 text-slate-800" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -110,18 +110,18 @@ export default function Login() {
                     </div>
                 </div>
                 
-                <div className="relative z-10 pt-12 text-sm text-slate-800/80 font-bold">
+                <div className="hidden lg:block relative z-10 pt-12 text-sm text-slate-800/80 font-bold">
                     &copy; {new Date().getFullYear()} State Department for Petroleum. All rights reserved.
                 </div>
             </div>
 
             {/* Right Login Form Side */}
-            <div className="w-full lg:w-1/2 flex items-center justify-center bg-gray-50/50 p-6 md:p-12 relative">
+            <div className="w-full lg:w-1/2 flex items-start lg:items-center justify-center px-4 pb-12 lg:p-12 relative -mt-10 lg:mt-0 z-20">
                 <div className="w-full max-w-md">
-                    <form onSubmit={handleSubmit} className="bg-white p-8 md:p-10 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 transition-all">
+                    <form onSubmit={handleSubmit} className="bg-white p-6 sm:p-8 md:p-10 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] lg:shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 transition-all">
                         <div className="text-center mb-10">
                             <h2 className="text-3xl font-black text-gray-900 tracking-tight">Sign In</h2>
-                            <p className="text-sm text-gray-500 mt-2 font-medium">Access your portal applicant dashboard</p>
+                            <p className="text-sm text-gray-500 mt-2 font-medium">Access to industrial attachment system</p>
                         </div>
                         
                         {error && (

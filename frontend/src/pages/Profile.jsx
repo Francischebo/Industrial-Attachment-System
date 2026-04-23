@@ -110,12 +110,32 @@ export default function Profile() {
         { id: 'files', label: 'Files & Documents' }
     ];
 
-    let requiredDocuments = [];
-    if (profile.opportunity_type === 'INTERNSHIP') {
-        requiredDocuments = ['NATIONAL_ID', 'KRA_PIN', 'SHA_CARD', 'NSSF_CARD', 'BIRTH_CERT', 'ACADEMIC_CERT', 'SECRETS_ACT_FORM', 'PSIP_FORM', 'PASSPORT_PHOTOS', 'ATM_CARD'];
-    } else if (profile.opportunity_type === 'ATTACHMENT') {
-        requiredDocuments = ['COVER_LETTER', 'INSTITUTION_INTRO', 'RESUME', 'TRANSCRIPT', 'GOOD_CONDUCT', 'STUDENT_INSURANCE', 'STUDENT_ID', 'NATIONAL_ID', 'NEXT_OF_KIN_ID'];
-    }
+    const requiredDocuments = ['COVER_LETTER', 'INSTITUTION_INTRO', 'RESUME', 'TRANSCRIPT', 'GOOD_CONDUCT', 'STUDENT_INSURANCE', 'STUDENT_ID', 'NATIONAL_ID', 'NEXT_OF_KIN_ID'];
+
+    const checkProfileCompletion = () => {
+        const hasGeneral = Boolean(profile.first_name && profile.last_name && profile.dob && profile.gender && profile.marital_status && profile.id_number && profile.phone_number && profile.postal_address && profile.nationality);
+        const hasEdu = education.length > 0;
+        const missingDocs = requiredDocuments.filter(docType => !documents.some(d => d.document_type === docType));
+        const hasDocs = missingDocs.length === 0;
+
+        if (!hasGeneral) {
+            alert('Please fill out all required fields in the General Information section.');
+            setActiveTab('general');
+            return;
+        }
+        if (!hasEdu) {
+            alert('Please add at least one Education Qualification.');
+            setActiveTab('education');
+            return;
+        }
+        if (!hasDocs) {
+            alert(`Please upload all required files. Missing: ${missingDocs.map(d => d.replace(/_/g, ' ')).join(', ')}`);
+            setActiveTab('files');
+            return;
+        }
+        
+        alert('Profile successfully completed. You can now make applications for available vacancies.');
+    };
 
     return (
         <div className="max-w-6xl mx-auto animation-fade-in relative">
@@ -335,6 +355,13 @@ export default function Profile() {
                                         </div>
                                     )
                                 })}
+                            </div>
+
+                            <div className="mt-10 pt-6 border-t border-gray-200 flex justify-end">
+                                <button onClick={checkProfileCompletion} className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-xl font-black text-lg transition-all shadow-md hover:shadow-lg flex items-center">
+                                    <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+                                    Save All & Complete Profile
+                                </button>
                             </div>
                         </div>
                     )}

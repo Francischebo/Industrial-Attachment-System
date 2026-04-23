@@ -30,15 +30,7 @@ export default function Dashboard({ children }) {
         }
     }, [user]);
 
-    const handleSelectOpportunity = async (type) => {
-        try {
-            const res = await api.patch('accounts/profile/', { opportunity_type: type });
-            setProfile(res.data);
-        } catch(err) {
-            console.error(err);
-            alert("Failed to save preference. Make sure you are logged in.");
-        }
-    };
+
     
     return (
         <div className="fixed inset-0 flex h-[100dvh] bg-gray-50 font-sans overflow-hidden w-full">
@@ -56,41 +48,6 @@ export default function Dashboard({ children }) {
                     {children || (
                         user?.role === 'ADMIN' ? (
                             <AdminAnalytics />
-                        ) : profile?.opportunity_type === 'NONE' || !profile?.opportunity_type ? (
-                            <div className="max-w-5xl mx-auto animation-fade-in text-center mt-6">
-                                <h2 className="text-4xl font-black text-gray-900 mb-4 tracking-tight">Select Your Career Path</h2>
-                                <p className="text-lg text-gray-600 mb-12 max-w-2xl mx-auto">Please formally select the opportunity type you are applying for. This choice will permanently configure your profile's mandatory document requirements.</p>
-                                
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
-                                    <button onClick={() => handleSelectOpportunity('ATTACHMENT')} className="bg-white border-2 border-gray-100 hover:border-primary-400 hover:shadow-2xl rounded-3xl p-10 transition-all duration-300 group shadow-sm block w-full outline-none focus:ring-4 focus:ring-primary-100">
-                                        <h3 className="text-3xl font-black text-gray-800 mb-4 group-hover:text-primary-600 transition-colors">Industrial Attachment</h3>
-                                        <p className="text-gray-500 font-medium leading-relaxed mb-6">For continuing students requiring practical field experience as part of their prevailing academic coursework.</p>
-                                        <div className="space-y-4 border-t border-gray-100 pt-6">
-                                            <p className="text-xs font-black text-gray-400 uppercase tracking-widest">Mandatory Validations:</p>
-                                            <ul className="text-sm text-gray-600 space-y-2 font-bold opacity-80">
-                                                <li className="flex items-center"><span className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></span> Institution Intro Letter</li>
-                                                <li className="flex items-center"><span className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></span> Student Insurance Cover</li>
-                                                <li className="flex items-center"><span className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></span> Good Conduct Certificate</li>
-                                                <li className="flex items-center"><span className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></span> Transcript & Student ID</li>
-                                            </ul>
-                                        </div>
-                                    </button>
-                                    
-                                    <button onClick={() => handleSelectOpportunity('INTERNSHIP')} className="bg-white border-2 border-gray-100 hover:border-primary-400 hover:shadow-2xl rounded-3xl p-10 transition-all duration-300 group shadow-sm block w-full outline-none focus:ring-4 focus:ring-primary-100">
-                                        <h3 className="text-3xl font-black text-gray-800 mb-4 group-hover:text-primary-600 transition-colors">Youth Internship</h3>
-                                        <p className="text-gray-500 font-medium leading-relaxed mb-6">For youth graduates seeking to acquire accelerated professional skills and direct exposure in the public service.</p>
-                                        <div className="space-y-4 border-t border-gray-100 pt-6">
-                                            <p className="text-xs font-black text-gray-400 uppercase tracking-widest">Mandatory Validations:</p>
-                                            <ul className="text-sm text-gray-600 space-y-2 font-bold opacity-80">
-                                                <li className="flex items-center"><span className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></span> KRA, SHA & NSSF Cards</li>
-                                                <li className="flex items-center"><span className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></span> Academic & Birth Certificates</li>
-                                                <li className="flex items-center"><span className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></span> Official Secrets Act Form</li>
-                                                <li className="flex items-center"><span className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></span> PSIP Intern Biodata Form</li>
-                                            </ul>
-                                        </div>
-                                    </button>
-                                </div>
-                            </div>
                         ) : (
                             <div className="max-w-7xl mx-auto animation-fade-in">
                                 <h2 className="text-3xl font-extrabold text-gray-900 mb-8 tracking-tight">Welcome, {user?.username || 'User'}!</h2>

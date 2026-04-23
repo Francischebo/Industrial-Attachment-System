@@ -71,8 +71,6 @@ export default function ManageJobs() {
                 </div>
                 <div className="mt-4 md:mt-0 flex overflow-x-auto whitespace-nowrap scrollbar-hide border border-gray-200 rounded-xl bg-white p-1 shadow-sm w-full md:w-auto">
                     <button onClick={() => setFilterType('ALL')} className={`flex-1 md:flex-none px-4 py-2 font-bold text-sm rounded-lg transition-colors ${filterType === 'ALL' ? 'bg-primary-600 text-white' : 'text-gray-500 hover:bg-gray-100'}`}>All Apps</button>
-                    <button onClick={() => setFilterType('INTERNSHIP')} className={`flex-1 md:flex-none px-4 py-2 font-bold text-sm rounded-lg transition-colors ${filterType === 'INTERNSHIP' ? 'bg-primary-600 text-white' : 'text-gray-500 hover:bg-gray-100'}`}>Internships</button>
-                    <button onClick={() => setFilterType('ATTACHMENT')} className={`flex-1 md:flex-none px-4 py-2 font-bold text-sm rounded-lg transition-colors ${filterType === 'ATTACHMENT' ? 'bg-primary-600 text-white' : 'text-gray-500 hover:bg-gray-100'}`}>Attachments</button>
                 </div>
             </div>
 
@@ -98,7 +96,7 @@ export default function ManageJobs() {
                                     <td className="px-6 py-4 whitespace-nowrap font-extrabold text-gray-900">{app.applicant_name}</td>
                                     <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-600">
                                         {app.job_title}
-                                        <div className="text-xs font-bold text-gray-400 mt-0.5">{app.job_type === 'INTERNSHIP' ? 'Youth Internship Category' : 'Industrial Attachment Category'}</div>
+                                        <div className="text-xs font-bold text-gray-400 mt-0.5">Industrial Attachment Category</div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <span className={`px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full border ${app.ats_score > 70 ? 'bg-green-50 text-green-700 border-green-200' : 'bg-yellow-50 text-yellow-700 border-yellow-200'}`}>

@@ -56,7 +56,7 @@ export default function Vacancies() {
             const hasEdu = edu.length > 0;
             
             const docs = Array.isArray(docRes.data) ? docRes.data : docRes.data.results || [];
-            const reqDocs = ['TRANSCRIPT', 'SCHOOL_ID', 'NATIONAL_ID', 'RESUME', 'COVER_LETTER'];
+            const reqDocs = ['COVER_LETTER', 'INSTITUTION_INTRO', 'RESUME', 'TRANSCRIPT', 'GOOD_CONDUCT', 'STUDENT_INSURANCE', 'STUDENT_ID', 'NATIONAL_ID', 'NEXT_OF_KIN_ID'];
             const hasDocs = reqDocs.every(rt => docs.some(d => d.document_type === rt));
             
             setIsProfileComplete(hasGeneral && hasEdu && hasDocs);
@@ -310,7 +310,6 @@ export default function Vacancies() {
                                             className="w-full bg-gray-50 border border-gray-200 text-gray-900 rounded-xl focus:ring-primary-500 focus:border-primary-500 block p-3 font-medium cursor-pointer"
                                         >
                                             <option value="JOB_OPENING">Job Opening</option>
-                                            <option value="INTERNSHIP">Internship</option>
                                             <option value="ATTACHMENT">Attachment</option>
                                         </select>
                                     </div>
