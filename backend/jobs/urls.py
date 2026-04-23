@@ -9,8 +9,8 @@ from .views import (
 )
 
 urlpatterns = [
-    path("jobs/", JobListCreateView.as_view(), name="job-list"),
-    path("jobs/<int:pk>/", JobDetailView.as_view(), name="job-detail"),
+    path("vacancies/", JobListCreateView.as_view(), name="job-list"),
+    path("vacancies/<int:pk>/", JobDetailView.as_view(), name="job-detail"),
     path("applications/", ApplicationListCreateView.as_view(), name="application-list"),
     path(
         "applications/<int:pk>/",

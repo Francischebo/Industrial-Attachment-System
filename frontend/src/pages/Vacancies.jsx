@@ -36,7 +36,7 @@ export default function Vacancies() {
     }, [userRole]);
 
     const fetchJobs = () => {
-        api.get('careers/jobs/')
+        api.get('jobs/vacancies/')
            .then(res => setVacancies(res.data.results || res.data))
            .catch(err => console.error("Error fetching jobs:", err));
     };
@@ -69,7 +69,7 @@ export default function Vacancies() {
 
     const applyForJob = async (jobId) => {
         try {
-            await api.post('careers/applications/', { job: jobId, cover_letter: 'Standard application' });
+            await api.post('jobs/applications/', { job: jobId, cover_letter: 'Standard application' });
             setSuccessMessage('Your application has been safely submitted and is now under automated review.');
             setTimeout(() => setSuccessMessage(''), 5000);
         } catch (error) {
@@ -114,7 +114,7 @@ export default function Vacancies() {
     const handleDelete = async (jobId) => {
         if (!window.confirm("Are you sure you want to delete this vacancy? This action cannot be undone.")) return;
         try {
-            await api.delete(`careers/jobs/${jobId}/`);
+            await api.delete(`jobs/vacancies/${jobId}/`);
             setVacancies(prev => prev.filter(j => j.id !== jobId));
         } catch (error) {
             console.error("Failed to delete job", error);
@@ -128,10 +128,10 @@ export default function Vacancies() {
         
         try {
             if (editMode && currentJobId) {
-                const res = await api.put(`careers/jobs/${currentJobId}/`, formData);
+                const res = await api.put(`jobs/vacancies/${currentJobId}/`, formData);
                 setVacancies(prev => prev.map(j => j.id === currentJobId ? res.data : j));
             } else {
-                const res = await api.post('careers/jobs/', formData);
+                const res = await api.post('jobs/vacancies/', formData);
                 setVacancies(prev => [res.data, ...prev]);
             }
             setIsModalOpen(false);

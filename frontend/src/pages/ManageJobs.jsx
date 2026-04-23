@@ -11,7 +11,7 @@ export default function ManageJobs() {
 
     useEffect(() => {
         if (userRole === 'ADMIN') {
-            api.get('careers/applications/')
+            api.get('jobs/applications/')
                .then(res => setApplications(res.data.results || res.data))
                .catch(err => console.error(err))
                .finally(() => setLoading(false));
@@ -22,7 +22,7 @@ export default function ManageJobs() {
 
     const updateApplicationStatus = async (appId, newStatus) => {
         try {
-            await api.patch(`careers/applications/${appId}/status/`, { status: newStatus });
+            await api.patch(`jobs/applications/${appId}/status/`, { status: newStatus });
             setApplications(prev => prev.map(a => a.id === appId ? { ...a, status: newStatus } : a));
             setSelectedApp(prev => prev ? { ...prev, status: newStatus } : null);
             alert(`Application updated to: ${newStatus}`);

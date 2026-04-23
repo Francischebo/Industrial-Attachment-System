@@ -38,7 +38,7 @@ export default function AdminAnalytics() {
         const fetchAnalytics = async () => {
             setLoading(true);
             try {
-                const response = await api.get(`/careers/analytics/?start_date=${startDate}&end_date=${endDate}`);
+                const response = await api.get(`/jobs/analytics/?start_date=${startDate}&end_date=${endDate}`);
                 setStats(response.data);
             } catch (error) {
                 console.error("Failed to fetch analytics:", error);
