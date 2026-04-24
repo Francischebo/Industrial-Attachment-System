@@ -58,18 +58,32 @@ export default function Vacancies() {
             let allJobs = [];
             let url = 'jobs/vacancies/';
             while (url) {
+                // If the URL is absolute from DRF's next link, extract the relative path to prevent CORS/interceptor issues
+                if (url.startsWith('http')) {
+                    try {
+                        const urlObj = new URL(url);
+                        url = urlObj.pathname.replace('/api/', '') + urlObj.search;
+                    } catch (e) {
+                        url = null;
+                        break;
+                    }
+                }
+
                 const res = await api.get(url);
-                if (res.data && res.data.results) {
+                if (res.data && Array.isArray(res.data.results)) {
                     allJobs = [...allJobs, ...res.data.results];
                     url = res.data.next;
+                } else if (Array.isArray(res.data)) {
+                    allJobs = [...allJobs, ...res.data];
+                    url = null;
                 } else {
-                    allJobs = res.data || [];
                     url = null;
                 }
             }
             setVacancies(allJobs);
         } catch (err) {
             console.error("Error fetching jobs:", err);
+            setVacancies([]);
         }
     };
 

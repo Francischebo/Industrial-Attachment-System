@@ -19,9 +19,16 @@ export default function ManageUsers() {
     const fetchUsers = async () => {
         try {
             const res = await api.get('accounts/users/');
-            setUsers(res.data.results || res.data);
+            if (res.data && Array.isArray(res.data.results)) {
+                setUsers(res.data.results);
+            } else if (Array.isArray(res.data)) {
+                setUsers(res.data);
+            } else {
+                setUsers([]);
+            }
         } catch (err) {
             console.error("Failed to fetch users", err);
+            setUsers([]);
         } finally {
             setLoading(false);
         }

@@ -15,18 +15,31 @@ export default function ManageJobs() {
                 let allApps = [];
                 let url = 'jobs/applications/';
                 while (url) {
+                    if (url.startsWith('http')) {
+                        try {
+                            const urlObj = new URL(url);
+                            url = urlObj.pathname.replace('/api/', '') + urlObj.search;
+                        } catch (e) {
+                            url = null;
+                            break;
+                        }
+                    }
+
                     const res = await api.get(url);
-                    if (res.data && res.data.results) {
+                    if (res.data && Array.isArray(res.data.results)) {
                         allApps = [...allApps, ...res.data.results];
                         url = res.data.next;
+                    } else if (Array.isArray(res.data)) {
+                        allApps = [...allApps, ...res.data];
+                        url = null;
                     } else {
-                        allApps = res.data || [];
                         url = null;
                     }
                 }
                 setApplications(allApps);
             } catch (error) {
                 console.error(error);
+                setApplications([]);
             } finally {
                 setLoading(false);
             }
