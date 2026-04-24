@@ -15,27 +15,27 @@ from django.db.models.functions import TruncDate, TruncMonth, TruncWeek, TruncYe
 User = get_user_model()
 
 
-class IsAdminOrReadOnly(permissions.BasePermission):
+class IsManagementOrReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.method in permissions.SAFE_METHODS:
             return True
-        return (
-            request.user
-            and request.user.is_authenticated
-            and request.user.role == "ADMIN"
-        )
+        if not request.user or not request.user.is_authenticated:
+            return False
+        if request.method == "DELETE" and request.user.role == "HR":
+            return False
+        return request.user.role in ["ADMIN", "HR"]
 
 
 class JobListCreateView(generics.ListCreateAPIView):
     queryset = Job.objects.all().order_by("-created_at")
     serializer_class = JobSerializer
-    permission_classes = (IsAdminOrReadOnly,)
+    permission_classes = (IsManagementOrReadOnly,)
 
 
 class JobDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Job.objects.all()
     serializer_class = JobSerializer
-    permission_classes = (IsAdminOrReadOnly,)
+    permission_classes = (IsManagementOrReadOnly,)
 
 
 class ApplicationListCreateView(generics.ListCreateAPIView):
@@ -46,7 +46,7 @@ class ApplicationListCreateView(generics.ListCreateAPIView):
         qs = Application.objects.select_related(
             "job", "user", "user__profile"
         ).prefetch_related("user__documents").order_by("-applied_at")
-        if self.request.user.role == "ADMIN":
+        if self.request.user.role in ["ADMIN", "HR"]:
             return qs.all()
         return qs.filter(user=self.request.user)
 
@@ -140,13 +140,13 @@ class ApplicationDetailView(generics.RetrieveUpdateDestroyAPIView):
         qs = Application.objects.select_related(
             "job", "user", "user__profile"
         ).prefetch_related("user__documents").order_by("-applied_at")
-        if self.request.user.role == "ADMIN":
+        if self.request.user.role in ["ADMIN", "HR"]:
             return qs.all()
         return qs.filter(user=self.request.user)
 
 
 class ApplicationStatusUpdateView(APIView):
-    permission_classes = (IsAdminOrReadOnly,)
+    permission_classes = (IsManagementOrReadOnly,)
 
     def patch(self, request, pk):
         try:
@@ -170,7 +170,7 @@ class ApplicationStatusUpdateView(APIView):
 
 
 class AnalyticsView(APIView):
-    permission_classes = (IsAdminOrReadOnly,)
+    permission_classes = (IsManagementOrReadOnly,)
 
     def get(self, request):
         now = timezone.now()

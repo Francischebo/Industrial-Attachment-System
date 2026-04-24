@@ -15,7 +15,7 @@ class Job(models.Model):
     requirements = models.TextField()
     job_type = models.CharField(max_length=20, choices=JOB_TYPE_CHOICES, db_index=True)
     location = models.CharField(max_length=150)
-    deadline = models.DateTimeField()
+    deadline = models.DateTimeField(db_index=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     is_active = models.BooleanField(default=True, db_index=True)
 
@@ -39,7 +39,7 @@ class Application(models.Model):
     status = models.CharField(
         max_length=20, choices=STATUS_CHOICES, default="PENDING", db_index=True
     )
-    ats_score = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
+    ats_score = models.DecimalField(max_digits=5, decimal_places=2, default=0.00, db_index=True)
     applied_at = models.DateTimeField(auto_now_add=True, db_index=True)
 
     class Meta:

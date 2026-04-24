@@ -92,13 +92,13 @@ class GoogleLoginView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
-class IsAdminRole(permissions.BasePermission):
+class IsManagementRole(permissions.BasePermission):
     def has_permission(self, request, view):
-        return (
-            request.user
-            and request.user.is_authenticated
-            and getattr(request.user, "role", "") == "ADMIN"
-        )
+        if not request.user or not request.user.is_authenticated:
+            return False
+        if request.method == "DELETE" and request.user.role == "HR":
+            return False
+        return request.user.role in ["ADMIN", "HR"]
 
 
 User = get_user_model()
@@ -221,8 +221,8 @@ class ProtectedMediaView(APIView):
     def get(self, request, pk, format=None):
         document = get_object_or_404(Document, pk=pk)
 
-        # Check if the user is the owner or an admin
-        if document.user != request.user and request.user.role != "ADMIN":
+        # Check if the user is the owner or management
+        if document.user != request.user and request.user.role not in ["ADMIN", "HR"]:
             from django.core.exceptions import PermissionDenied
 
             raise PermissionDenied("You do not have permission to view this file.")
@@ -236,13 +236,13 @@ class ProtectedMediaView(APIView):
 class UserManagementListView(generics.ListAPIView):
     queryset = User.objects.all().order_by("-date_joined")
     serializer_class = UserManagementSerializer
-    permission_classes = (IsAdminRole,)
+    permission_classes = (IsManagementRole,)
 
 
 class UserManagementDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserManagementSerializer
-    permission_classes = (IsAdminRole,)
+    permission_classes = (IsManagementRole,)
 
 
 class DashboardStatsView(APIView):

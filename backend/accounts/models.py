@@ -5,6 +5,7 @@ from django.contrib.auth.models import AbstractUser
 class User(AbstractUser):
     ROLE_CHOICES = (
         ("ADMIN", "Admin"),
+        ("HR", "HR Manager"),
         ("APPLICANT", "Applicant"),
     )
     email = models.EmailField("email address", unique=True, db_index=True)

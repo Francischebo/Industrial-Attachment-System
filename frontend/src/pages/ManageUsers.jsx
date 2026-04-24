@@ -9,7 +9,7 @@ export default function ManageUsers() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (userRole === 'ADMIN') {
+        if (['ADMIN', 'HR'].includes(userRole)) {
             fetchUsers();
         } else {
             setLoading(false);
@@ -65,7 +65,7 @@ export default function ManageUsers() {
         </div>
     );
 
-    if (userRole !== 'ADMIN') return (
+    if (!['ADMIN', 'HR'].includes(userRole)) return (
         <div className="text-center p-10 font-bold text-red-500 text-xl border border-red-200 bg-red-50 rounded-2xl mx-10 shadow-sm">
             Access Denied. Elevated Admin Privileges Required.
         </div>
@@ -121,6 +121,10 @@ export default function ManageUsers() {
                                              <span className="px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-lg border bg-purple-50 text-purple-700 border-purple-200">
                                                 ADMIN
                                             </span>
+                                        ) : u.role === 'HR' ? (
+                                            <span className="px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-lg border bg-blue-50 text-blue-700 border-blue-200">
+                                                HR
+                                            </span>
                                         ) : (
                                             <span className="px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-lg border bg-gray-100 text-gray-600 border-gray-200">
                                                 APPLICANT
@@ -131,14 +135,23 @@ export default function ManageUsers() {
                                         <div className="flex flex-col sm:flex-row items-end sm:items-center justify-end space-y-2 sm:space-y-0 sm:space-x-3">
                                             {u.id !== currentUser?.id && (
                                                 <>
-                                                    {u.role === 'APPLICANT' ? (
+                                                    {userRole === 'ADMIN' && u.role !== 'ADMIN' && (
                                                         <button 
                                                             onClick={() => handleRoleChange(u.id, 'ADMIN')}
                                                             className="text-primary-600 hover:text-primary-800 bg-primary-50 hover:bg-primary-100 px-3 py-1.5 rounded font-bold border border-primary-100 transition-colors text-xs inline-flex items-center"
                                                         >
+                                                            Promote Admin
+                                                        </button>
+                                                    )}
+                                                    {userRole === 'ADMIN' && u.role !== 'HR' && u.role !== 'ADMIN' && (
+                                                        <button 
+                                                            onClick={() => handleRoleChange(u.id, 'HR')}
+                                                            className="text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded font-bold border border-blue-100 transition-colors text-xs inline-flex items-center"
+                                                        >
                                                             Promote HR
                                                         </button>
-                                                    ) : (
+                                                    )}
+                                                    {u.role !== 'APPLICANT' && (userRole === 'ADMIN' || (userRole === 'HR' && u.role !== 'ADMIN')) && (
                                                         <button 
                                                             onClick={() => handleRoleChange(u.id, 'APPLICANT')}
                                                             className="text-gray-600 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded font-bold border border-gray-200 transition-colors text-xs inline-flex items-center"
@@ -147,12 +160,14 @@ export default function ManageUsers() {
                                                         </button>
                                                     )}
                                                     
-                                                    <button 
-                                                        onClick={() => handleDeleteUser(u.id)}
-                                                        className="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded font-bold border border-red-100 transition-colors text-xs inline-flex items-center"
-                                                    >
-                                                        Revoke
-                                                    </button>
+                                                    {userRole !== 'HR' && (
+                                                        <button 
+                                                            onClick={() => handleDeleteUser(u.id)}
+                                                            className="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded font-bold border border-red-100 transition-colors text-xs inline-flex items-center"
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                    )}
                                                 </>
                                             )}
                                             {u.id === currentUser?.id && (

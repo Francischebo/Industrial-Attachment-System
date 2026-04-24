@@ -34,6 +34,7 @@ export default function Vacancies() {
     });
 
     useEffect(() => {
+        // Initial fetch
         fetchJobs();
            
         if (userRole === 'APPLICANT') {
@@ -41,12 +42,35 @@ export default function Vacancies() {
         } else {
             setCheckingProfile(false);
         }
+
+        // Set up near-instant auto-refresh polling (every 2 seconds)
+        // to ensure vacancies pop up automatically without page refresh
+        const intervalId = setInterval(() => {
+            fetchJobs();
+        }, 2000);
+
+        // Cleanup interval on component unmount
+        return () => clearInterval(intervalId);
     }, [userRole]);
 
-    const fetchJobs = () => {
-        api.get('jobs/vacancies/')
-           .then(res => setVacancies(res.data.results || res.data))
-           .catch(err => console.error("Error fetching jobs:", err));
+    const fetchJobs = async () => {
+        try {
+            let allJobs = [];
+            let url = 'jobs/vacancies/';
+            while (url) {
+                const res = await api.get(url);
+                if (res.data && res.data.results) {
+                    allJobs = [...allJobs, ...res.data.results];
+                    url = res.data.next;
+                } else {
+                    allJobs = res.data || [];
+                    url = null;
+                }
+            }
+            setVacancies(allJobs);
+        } catch (err) {
+            console.error("Error fetching jobs:", err);
+        }
     };
 
     const checkProfileCompleteness = async () => {
@@ -173,7 +197,7 @@ export default function Vacancies() {
                     <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Available Vacancies</h2>
                     <p className="text-gray-500 font-medium mt-1">Explore and apply for open positions</p>
                 </div>
-                {userRole === 'ADMIN' && (
+                {['ADMIN', 'HR'].includes(userRole) && (
                     <button 
                         onClick={openCreateModal}
                         className="bg-primary hover:bg-primary-600 shadow-[0_4px_14px_0_rgba(227,188,117,0.39)] hover:shadow-[0_6px_20px_rgba(227,188,117,0.23)] hover:-translate-y-0.5 text-white px-6 py-3 rounded-xl font-bold transition-all duration-200"
@@ -257,7 +281,7 @@ export default function Vacancies() {
                                 </button>
                             )}
                             
-                            {userRole === 'ADMIN' && (
+                            {['ADMIN', 'HR'].includes(userRole) && (
                                 <div className="grid grid-cols-2 gap-2">
                                     <button 
                                         onClick={() => openEditModal(job)}
@@ -266,16 +290,18 @@ export default function Vacancies() {
                                         <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                                         Edit
                                     </button>
-                                    <button 
-                                        onClick={() => handleDelete(job.id)}
-                                        className="col-span-1 bg-red-50 text-red-600 hover:bg-red-500 hover:text-white border border-red-200 font-bold py-2.5 rounded-lg transition-colors text-sm flex items-center justify-center"
-                                    >
-                                        <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                        Delete
-                                    </button>
+                                    {userRole !== 'HR' && (
+                                        <button 
+                                            onClick={() => handleDelete(job.id)}
+                                            className="col-span-1 bg-red-50 text-red-600 hover:bg-red-500 hover:text-white border border-red-200 font-bold py-2.5 rounded-lg transition-colors text-sm flex items-center justify-center"
+                                        >
+                                            <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                            Delete
+                                        </button>
+                                    )}
                                     <button 
                                         onClick={() => navigate('/manage-jobs')}
-                                        className="col-span-2 bg-gray-50 text-gray-700 hover:bg-gray-800 hover:text-white border border-gray-200 font-bold py-2.5 rounded-lg transition-all shadow-sm text-sm"
+                                        className={`${userRole === 'HR' ? 'col-span-1' : 'col-span-2'} bg-gray-50 text-gray-700 hover:bg-gray-800 hover:text-white border border-gray-200 font-bold py-2.5 rounded-lg transition-all shadow-sm text-sm`}
                                     >
                                         View Applications
                                     </button>
@@ -287,7 +313,7 @@ export default function Vacancies() {
             </div>
 
             {/* Admin Create/Edit Modal */}
-            {isModalOpen && userRole === 'ADMIN' && (
+            {isModalOpen && ['ADMIN', 'HR'].includes(userRole) && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-gray-900/60 backdrop-blur-sm animation-fade-in overflow-y-auto">
                     <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl my-auto relative border-t-8 border-t-primary-500 flex flex-col max-h-[90vh]">
                         

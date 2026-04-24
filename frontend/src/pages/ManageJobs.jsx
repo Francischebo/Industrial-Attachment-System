@@ -10,11 +10,30 @@ export default function ManageJobs() {
     const [filterType, setFilterType] = useState('ALL');
 
     useEffect(() => {
-        if (userRole === 'ADMIN') {
-            api.get('jobs/applications/')
-               .then(res => setApplications(res.data.results || res.data))
-               .catch(err => console.error(err))
-               .finally(() => setLoading(false));
+        const fetchAllApplications = async () => {
+            try {
+                let allApps = [];
+                let url = 'jobs/applications/';
+                while (url) {
+                    const res = await api.get(url);
+                    if (res.data && res.data.results) {
+                        allApps = [...allApps, ...res.data.results];
+                        url = res.data.next;
+                    } else {
+                        allApps = res.data || [];
+                        url = null;
+                    }
+                }
+                setApplications(allApps);
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (['ADMIN', 'HR'].includes(userRole)) {
+            fetchAllApplications();
         } else {
             setLoading(false);
         }
@@ -56,7 +75,7 @@ export default function ManageJobs() {
         </div>
     );
 
-    if (userRole !== 'ADMIN') return (
+    if (!['ADMIN', 'HR'].includes(userRole)) return (
         <div className="text-center p-10 font-bold text-red-500 text-xl border border-red-200 bg-red-50 rounded-2xl mx-10">Access Denied. Admin Privileges Required.</div>
     );
 

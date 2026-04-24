@@ -19,14 +19,14 @@ const ApplicantRoute = ({ children }) => {
     const isAuthenticated = useAuthStore(state => state.isAuthenticated);
     const userRole = useAuthStore(state => state.user?.role);
     if (!isAuthenticated) return <Navigate to="/login" />;
-    return userRole === 'ADMIN' ? <Navigate to="/dashboard" /> : children;
+    return ['ADMIN', 'HR'].includes(userRole) ? <Navigate to="/dashboard" /> : children;
 };
 
-const AdminRoute = ({ children }) => {
+const ManagementRoute = ({ children }) => {
     const isAuthenticated = useAuthStore(state => state.isAuthenticated);
     const userRole = useAuthStore(state => state.user?.role);
     if (!isAuthenticated) return <Navigate to="/login" />;
-    return userRole === 'ADMIN' ? children : <Navigate to="/dashboard" />;
+    return ['ADMIN', 'HR'].includes(userRole) ? children : <Navigate to="/dashboard" />;
 };
 
 function App() {
@@ -40,8 +40,8 @@ function App() {
           <Route path="/profile" element={<ApplicantRoute><Dashboard><Profile /></Dashboard></ApplicantRoute>} />
           <Route path="/vacancies" element={<PrivateRoute><Dashboard><Vacancies /></Dashboard></PrivateRoute>} />
           <Route path="/applications" element={<ApplicantRoute><Dashboard><Applications /></Dashboard></ApplicantRoute>} />
-          <Route path="/manage-jobs" element={<AdminRoute><Dashboard><ManageJobs /></Dashboard></AdminRoute>} />
-          <Route path="/manage-users" element={<AdminRoute><Dashboard><ManageUsers /></Dashboard></AdminRoute>} />
+          <Route path="/manage-jobs" element={<ManagementRoute><Dashboard><ManageJobs /></Dashboard></ManagementRoute>} />
+          <Route path="/manage-users" element={<ManagementRoute><Dashboard><ManageUsers /></Dashboard></ManagementRoute>} />
           <Route path="/" element={<Navigate to="/dashboard" />} />
         </Routes>
       </div>

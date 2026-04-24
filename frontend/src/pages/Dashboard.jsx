@@ -14,7 +14,7 @@ export default function Dashboard({ children }) {
     const [stats, setStats] = useState({ applications_count: 0, profile_completeness_percentage: 0, latest_action: 'None' });
 
     useEffect(() => {
-        if (user && user.role !== 'ADMIN') {
+        if (user && !['ADMIN', 'HR'].includes(user.role)) {
             Promise.all([
                 api.get('accounts/profile/'),
                 api.get('accounts/dashboard-stats/')
@@ -46,7 +46,7 @@ export default function Dashboard({ children }) {
                         </div>
                     )}
                     {children || (
-                        user?.role === 'ADMIN' ? (
+                        ['ADMIN', 'HR'].includes(user?.role) ? (
                             <AdminAnalytics />
                         ) : (
                             <div className="max-w-7xl mx-auto animation-fade-in">
