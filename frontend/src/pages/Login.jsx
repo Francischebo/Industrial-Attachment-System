@@ -169,7 +169,7 @@ export default function Login() {
                             
                             <div className="pt-2 flex justify-center">
                                 <ReCAPTCHA
-                                    sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+                                    sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY || "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"}
                                     onChange={(token) => setRecaptchaToken(token)}
                                     theme="light"
                                 />
