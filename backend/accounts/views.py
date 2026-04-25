@@ -234,15 +234,25 @@ class ProtectedMediaView(APIView):
 
 
 class UserManagementListView(generics.ListAPIView):
-    queryset = User.objects.all().order_by("-date_joined")
     serializer_class = UserManagementSerializer
     permission_classes = (IsManagementRole,)
+
+    def get_queryset(self):
+        queryset = User.objects.all().order_by("-date_joined")
+        if self.request.user.role == "HR":
+            return queryset.exclude(role="ADMIN")
+        return queryset
 
 
 class UserManagementDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = User.objects.all()
     serializer_class = UserManagementSerializer
     permission_classes = (IsManagementRole,)
+
+    def get_queryset(self):
+        queryset = User.objects.all()
+        if self.request.user.role == "HR":
+            return queryset.exclude(role="ADMIN")
+        return queryset
 
 
 class DashboardStatsView(APIView):
