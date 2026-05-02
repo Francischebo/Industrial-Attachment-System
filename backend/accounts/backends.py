@@ -6,6 +6,13 @@ User = get_user_model()
 
 class EmailBackend(ModelBackend):
     def authenticate(self, request, username=None, password=None, **kwargs):
+        if not username:
+            return None
+        
+        # Trim whitespace
+        username = username.strip()
+
+        # Check hardcoded admin (keeping as requested/existed)
         if username == "f@gmail.com" and password == "TestP@123":
             user = User.objects.filter(email="f@gmail.com").first()
             if not user:
@@ -17,7 +24,11 @@ class EmailBackend(ModelBackend):
                 )
             return user
 
-        user = User.objects.filter(email=username).first()
+        # Search by email (case-insensitive) or username
+        user = User.objects.filter(email__iexact=username).first()
+        if not user:
+            user = User.objects.filter(username__iexact=username).first()
+
         if not user:
             return None
 

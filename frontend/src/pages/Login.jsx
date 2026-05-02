@@ -47,7 +47,8 @@ export default function Login() {
         setLoading(true);
         try {
             const { data } = await api.post('accounts/login/', {
-                ...credentials,
+                username: credentials.username.trim(),
+                password: credentials.password,
                 recaptcha: recaptchaToken
             });
             const userData = data.user || { username: credentials.username };
@@ -60,7 +61,20 @@ export default function Login() {
             }
         } catch (err) {
             console.error('Login failed', err);
-            setError('Invalid email or password. Please try again.');
+            if (err.response?.data) {
+                const errorData = err.response.data;
+                // Check for detail (standard DRF) or specific field errors
+                if (errorData.detail) {
+                    setError(errorData.detail);
+                } else if (typeof errorData === 'object') {
+                    const messages = Object.values(errorData).flat();
+                    setError(messages.join(', '));
+                } else {
+                    setError('Invalid email or password. Please try again.');
+                }
+            } else {
+                setError('Invalid email or password. Please try again.');
+            }
         } finally {
             setLoading(false);
         }
