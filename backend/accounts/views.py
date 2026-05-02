@@ -81,6 +81,7 @@ class GoogleLoginView(APIView):
                         "username": user.username,
                         "email": user.email,
                         "role": user.role,
+                        "is_superuser": user.is_superuser,
                         "first_name": user.first_name,
                         "last_name": user.last_name,
                     },
@@ -96,9 +97,9 @@ class IsManagementRole(permissions.BasePermission):
     def has_permission(self, request, view):
         if not request.user or not request.user.is_authenticated:
             return False
-        if request.method == "DELETE" and request.user.role == "HR":
+        if request.method == "DELETE" and request.user.role == "HR" and not request.user.is_superuser:
             return False
-        return request.user.role in ["ADMIN", "HR"]
+        return request.user.role in ["ADMIN", "HR"] or request.user.is_superuser
 
 
 User = get_user_model()
@@ -250,6 +251,10 @@ class UserManagementDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         queryset = User.objects.all()
+        # Superusers see everything
+        if self.request.user.is_superuser:
+            return queryset
+        # HR users cannot see/edit ADMINs
         if self.request.user.role == "HR":
             return queryset.exclude(role="ADMIN")
         return queryset

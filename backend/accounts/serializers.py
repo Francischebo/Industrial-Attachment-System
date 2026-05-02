@@ -31,6 +31,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             "username": self.user.username,
             "email": self.user.email,
             "role": self.user.role,
+            "is_superuser": self.user.is_superuser,
             "first_name": self.user.first_name,
             "last_name": self.user.last_name,
         }
@@ -57,6 +58,20 @@ class UserManagementSerializer(serializers.ModelSerializer):
             "date_joined",
         )
         read_only_fields = ("username", "email", "date_joined")
+
+    def validate_role(self, value):
+        request = self.context.get("request")
+        if not request or not request.user:
+            return value
+
+        # Only ADMIN or superusers can change user roles
+        if not (request.user.role == "ADMIN" or request.user.is_superuser):
+            # If the role is being changed from its current value, raise error
+            if self.instance and self.instance.role != value:
+                raise serializers.ValidationError(
+                    "Only administrators can change user roles."
+                )
+        return value
 
 
 class RegisterSerializer(serializers.ModelSerializer):

@@ -142,7 +142,7 @@ export default function ManageUsers() {
                                         <div className="flex flex-col sm:flex-row items-end sm:items-center justify-end space-y-2 sm:space-y-0 sm:space-x-3">
                                             {u.id !== currentUser?.id && (
                                                 <>
-                                                    {userRole === 'ADMIN' && u.role !== 'ADMIN' && (
+                                                    {(userRole === 'ADMIN' || currentUser?.is_superuser) && u.role !== 'ADMIN' && (
                                                         <button 
                                                             onClick={() => handleRoleChange(u.id, 'ADMIN')}
                                                             className="text-primary-600 hover:text-primary-800 bg-primary-50 hover:bg-primary-100 px-3 py-1.5 rounded font-bold border border-primary-100 transition-colors text-xs inline-flex items-center"
@@ -150,7 +150,7 @@ export default function ManageUsers() {
                                                             Promote Admin
                                                         </button>
                                                     )}
-                                                    {userRole === 'ADMIN' && u.role !== 'HR' && u.role !== 'ADMIN' && (
+                                                    {(userRole === 'ADMIN' || currentUser?.is_superuser) && u.role !== 'HR' && u.role !== 'ADMIN' && (
                                                         <button 
                                                             onClick={() => handleRoleChange(u.id, 'HR')}
                                                             className="text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded font-bold border border-blue-100 transition-colors text-xs inline-flex items-center"
@@ -158,7 +158,7 @@ export default function ManageUsers() {
                                                             Promote HR
                                                         </button>
                                                     )}
-                                                    {u.role !== 'APPLICANT' && (userRole === 'ADMIN' || (userRole === 'HR' && u.role !== 'ADMIN')) && (
+                                                    {u.role !== 'APPLICANT' && (userRole === 'ADMIN' || currentUser?.is_superuser || (userRole === 'HR' && u.role !== 'ADMIN')) && (
                                                         <button 
                                                             onClick={() => handleRoleChange(u.id, 'APPLICANT')}
                                                             className="text-gray-600 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded font-bold border border-gray-200 transition-colors text-xs inline-flex items-center"
@@ -167,7 +167,7 @@ export default function ManageUsers() {
                                                         </button>
                                                     )}
                                                     
-                                                    {userRole !== 'HR' && (
+                                                    {(userRole !== 'HR' || currentUser?.is_superuser) && (
                                                         <button 
                                                             onClick={() => handleDeleteUser(u.id)}
                                                             className="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded font-bold border border-red-100 transition-colors text-xs inline-flex items-center"
